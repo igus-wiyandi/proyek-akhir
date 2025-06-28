@@ -73,6 +73,8 @@
             transform: rotate(180deg);
         }
     </style>
+    @stack('styles')
+
 </head>
 
 <body class="bg-gray-50 font-sans">
@@ -117,7 +119,7 @@
                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Menu Guru</h3>
 
                     <!-- Rekap Absen -->
-                    <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
+                    <a href="{{ route('absensi.index') }}" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
                         <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 transition-colors">
                             <i class="fas fa-calendar-check text-blue-600 text-sm"></i>
                         </div>
@@ -125,7 +127,7 @@
                     </a>
 
                     <!-- Rekap Gaji -->
-                    <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
+                    <a href="{{ route('perhitungan_gaji.index') }}" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
                         <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors">
                             <i class="fas fa-money-bill-wave text-green-600 text-sm"></i>
                         </div>
@@ -257,6 +259,8 @@
             });
         });
     </script>
+    @stack('scripts')
+
 </body>
 
 </html>

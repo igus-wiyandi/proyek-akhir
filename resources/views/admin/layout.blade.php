@@ -73,6 +73,7 @@
             border-radius: 10px;
         }
     </style>
+    @stack('styles')
 </head>
 
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
@@ -143,7 +144,7 @@
                     </div>
 
                     <nav class="space-y-2">
-                        <a href="#" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
+                        <a href="{{ route('absensi.index') }}" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
                             <div class="w-10 h-10 bg-purple-100 group-hover:bg-purple-200 rounded-lg flex items-center justify-center mr-3 transition-colors">
                                 <i class="fad fa-clock text-purple-600 text-sm"></i>
                             </div>
@@ -196,7 +197,7 @@
                             <span class="font-medium">Jabatan</span>
                         </a>
 
-                        <a href="#" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
+                        <a href="{{ route('perhitungan_gaji.index') }}" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
                             <div class="w-10 h-10 bg-yellow-100 group-hover:bg-yellow-200 rounded-lg flex items-center justify-center mr-3 transition-colors">
                                 <i class="fad fa-calculator text-yellow-600 text-sm"></i>
                             </div>
@@ -304,6 +305,7 @@
             chevron.classList.toggle('rotate-180');
         });
     </script>
+     @stack('scripts')
 </body>
 
 </html>

@@ -41,6 +41,24 @@ class guru extends Model
 
     public function jabatan()
     {
-        return $this->hasMany(jabatan::class, 'jabatan_id');
+        return $this->hasOneThrough(
+            jabatan::class,
+            absensi::class,
+            'guru_id',
+            'id',
+            'id',
+            'jabatan_id'
+        );
+    }
+
+    public function jabatanTerakhir()
+    {
+        return $this->belongsTo(jabatan::class, 'jabatan_id')
+            ->through('absensi')
+            ->whereLatest('tanggal');
+    }
+    public function latestAbsensi()
+    {
+        return $this->hasOne(absensi::class, 'guru_id')->latestOfMany('tanggal');
     }
 }

@@ -53,6 +53,9 @@ Route::get('/mapel12/{id}/pilih-guru12', [mapel12Controller::class, 'showPilihGu
 Route::post('/mapel12/{id}/pilih-guru12', [mapel12Controller::class, 'simpanGuru12']);
 
 Route::middleware(LoggedInAdmin::class)->group(function () {
+    Route::post('/absensi/preview', [AbsensiController::class, 'preview'])->name('absensi.preview');
+    Route::post('/perhitungan_gaji/range', [perhitungan_gajiController::class, 'filterByDateRange'])->name('perhitungan_gaji.range');
+
 Route::resource('admin', adminController::class);
 Route::resource('guru', guruController::class);
 Route::resource('mapel', mapelController::class);

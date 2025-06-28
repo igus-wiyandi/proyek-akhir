@@ -16,7 +16,7 @@
       <h1 class="text-white font-bold text-3xl">Selamat Datang</h1>
       <div class="flex flex-col w-full items-center text-white font-semibold text-sm mt-5">
         <p>Masukkan kredensial Anda untuk mengakses akun Anda</p>
-        <p>dan melihat hasil rekap kehadiran serta gaji</p>
+        <p>dan melihat hasil rekap kehadiran dan gaji</p>
       </div>
 
       <img src="{{ asset('images/login.png.png') }}" alt="" class="h-96 mt-10">

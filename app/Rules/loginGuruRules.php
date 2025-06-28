@@ -29,6 +29,7 @@ class loginGuruRules implements ValidationRule
             $loginStatus = true;
             Session::put('loginStatus', true);
             Session::put('ambilUser', $guru);
+            Session::put('isAdmin', false);
         }
 
         if (! $loginStatus) {
