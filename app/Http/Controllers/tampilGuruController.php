@@ -9,4 +9,6 @@ class tampilGuruController extends Controller
     public function index(){
         return view('tampil_guru.layout');
     }
+
+
 }

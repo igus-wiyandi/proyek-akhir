@@ -3,26 +3,6 @@
 <div class="w-full p-6 bg-gray-100 ">
     <div class="w-full bg-white rounded-lg shadow-md overflow-hidden">
 
-        @if (session('success'))
-        <div
-            x-data="{ show: true }"
-            x-init="setTimeout(() => show = false, 3000)"
-            x-show="show"
-            x-transition
-            class="flex justify-center mt-4">
-            {{ session('success') }}
-        </div>
-        @endif
-
-       <div class="bg-teal-600 p-4 flex justify-between items-center">
-            <h2 class="text-xl font-semibold text-white">Guru</h2>
-            <a href="{{ route('guru.create') }}" class="text-white hover:text-teal-100 transition-colors" title="Tambah Data">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-            </a>
-        </div>
-
             <div class="p-6">
                 <table class="w-full border-collapse">
                     <thead>
@@ -62,14 +42,9 @@
                                 {{ $gurus->alamat }}
                             </td>
 
-                            <td class="p-3 border-b border-gray-200">
+                            <td class="p-3 border border-gray-200">
                                 <div class="flex space-x-3">
-                                    <a href="{{ route('guru.edit', $gurus->id) }}" class="text-teal-600 hover:text-teal-800 transition-colors" title="Edit">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                        </svg>
-                                    </a>
-                                    <form action="{{ route('mapel.destroy', $gurus->id) }}" method="POST" onsubmit="return confirm('Yakin ingin dihapus?')">
+                                    <form action="{{ route('guru.destroy', $gurus->id) }}" method="POST" onsubmit="return confirm('Yakin ingin dihapus?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-800 transition-colors" title="Hapus">
@@ -79,8 +54,9 @@
                                         </button>
                                     </form>
                                 </div>
-                            </td>
+                                </td>
                         </tr>
+
                         @endforeach
 
                     </tbody>

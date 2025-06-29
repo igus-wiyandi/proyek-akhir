@@ -117,6 +117,13 @@
                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Menu Guru</h3>
 
                     <!-- Rekap Absen -->
+                    <a href="{{ route('guru.info') }}" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
+                        <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-yellow-200 transition-colors">
+                            <i class="fas fa-user-circle text-yellow-600 text-sm"></i>
+                        </div>
+                        <span class="font-medium">Profil</span>
+                    </a>
+
                     <a href="#" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
                         <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 transition-colors">
                             <i class="fas fa-calendar-check text-blue-600 text-sm"></i>
@@ -179,8 +186,8 @@
     <main id="mainContent" class="transition-all duration-300 pt-20 md:ml-64">
         <div class="p-6">
             <!-- Content Area -->
+            @yield('content')
         </div>
-        @yield('content')
     </main>
 
     <script>

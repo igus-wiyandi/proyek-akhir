@@ -16,7 +16,7 @@
       <h1 class="text-white font-bold text-3xl">Selamat Datang</h1>
       <div class="flex flex-col w-full items-center text-white font-semibold text-sm mt-5">
         <p>Masukkan kredensial Anda untuk mengakses akun Anda</p>
-        <p>dan melihat hasil rekap kehadiran serta gaji</p>
+        <p>dan melihat hasil rekap kehadiran dan gaji</p>
       </div>
 
       <img src="{{ asset('images/login.png.png') }}" alt="" class="h-96 mt-10">
@@ -49,7 +49,7 @@
       </div>
 
       <div class="flex flex-col w-full mt-5 relative">
-        <label for="password" class="text-black font-semibold text-sm mb-1">Kata Sandi</label>
+        <label for="password" class="text-black font-semibold text-sm mb-1">Password</label>
         <img src="{{ asset('images/user.png.png') }}" alt="email" class="absolute left-3 top-8 flex items-center w-6 h-6">
         <input type="password" name="password" id="passwordInput" required placeholder="Masukkan Kata Sandi"
           class="w-full h-max py-2 px-11 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
@@ -74,6 +74,11 @@
       <div class="flex text-sm text-slate-600 font-semibold mt-5">
         <p class="mr-1">Bukan Guru?</p>
         <a href="{{ route('loginAdmin') }}" class="hover:underline text-teal-500">Kembali ke Admin!</a>
+      </div>
+
+      <div class="flex text-sm text-slate-600 font-semibold mt-5">
+        <p class="mr-1">Belum Punya Akun?</p>
+        <a href="{{ route('registerguru') }}" class="hover:underline text-teal-500">Register</a>
       </div>
 
     </form>

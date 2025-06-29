@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\guru;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class guruController extends Controller
 {
@@ -13,11 +14,6 @@ class guruController extends Controller
         return view('guru.index', compact('guru'));
     }
 
-    public function create()
-    {
-        $guru = guru::all();
-        return view('guru.create', compact('guru'));
-    }
 
     public function store(Request $request)
     {
@@ -50,13 +46,29 @@ class guruController extends Controller
         return redirect()->route('guru.index')->with('success', 'Guru Berhasil Ditambah');
     }
 
-    public function edit(guru $guru)
+    public function edit($id)
     {
+        $guru = guru::findOrFail($id);
         return view('guru.edit', compact('guru'));
+    }
+
+
+    public function layout()
+    {
+        $guruId = Session::get('guru_id');
+
+        if (!$guruId) {
+            return redirect()->route('loginGuru')->with('error', 'Silakan login dulu.');
+        }
+
+        $guru = guru::findOrFail($guruId);
+
+        return view('tampil_guru.layout', compact('guru'));
     }
 
     public function update(Request $request, guru $guru)
     {
+
         $request->validate([
             'nama' => 'min:5|string',
             'email' => 'min:5|string',
@@ -81,7 +93,7 @@ class guruController extends Controller
 
         $guru->save();
 
-        return redirect()->route('guru.index')->with('success', 'Guru Berhasil Diubah');
+        return redirect()->route('guru.info')->with('success', 'Guru Berhasil Diubah');
     }
 
     public function destroy(guru $guru)
@@ -89,4 +101,24 @@ class guruController extends Controller
         $guru->delete();
         return redirect()->route('guru.index')->with('success', 'Guru Berhasil Dihapus');
     }
+
+    public function infoguru(){
+        $guruId = Session::get('guru_id');
+
+        if (!$guruId) {
+            return redirect()->route('loginGuru')->with('error', 'Silakan login dulu.');
+        }
+
+        $guru = guru::findOrFail($guruId);
+
+        return view('guru.info', compact('guru'));
+    }
+
+    public function show($id)
+{
+    $guru = guru::findOrFail($id);
+    return view('guru.show', compact('guru'));
+}
+
+
 }

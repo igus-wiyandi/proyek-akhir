@@ -130,7 +130,7 @@
                             <div class="w-10 h-10 bg-green-100 group-hover:bg-green-200 rounded-lg flex items-center justify-center mr-3 transition-colors">
                                 <i class="fad fa-users text-green-600 text-sm"></i>
                             </div>
-                            <span class="font-medium">Data Guru</span>
+                            <span class="font-medium">Guru</span>
                         </a>
                     </nav>
                 </div>

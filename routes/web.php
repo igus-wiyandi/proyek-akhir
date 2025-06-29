@@ -30,12 +30,13 @@ Route::middleware(LoggedInGuru::class)->group(function () {
     Route::resource('status12', status12Controller::class);
     Route::resource('tampilGuru', tampilGuruController::class);
     Route::get('/logoutGuru', [login_guruController::class, 'logoutGuru'])->name('logoutGuru');
-
 });
 
 Route::middleware(LoginCheckGuru::class)->group(function () {
     Route::get('/', [login_guruController::class, 'loginGuru'])->name('loginGuru');
     Route::post('/prosesloginGuru', [login_guruController::class, 'prosesloginGuru'])->name('prosesloginGuru');
+    Route::get('/register', [login_guruController::class, 'registerGuru'])->name('registerguru');
+    Route::post('/registerGuru', [login_guruController::class, 'prosesregisGuru'])->name('prosesregisguru');
 });
 
 Route::middleware(LoginCheckAdmin::class)->group(function () {
@@ -54,7 +55,7 @@ Route::post('/mapel12/{id}/pilih-guru12', [mapel12Controller::class, 'simpanGuru
 
 Route::middleware(LoggedInAdmin::class)->group(function () {
 Route::resource('admin', adminController::class);
-Route::resource('guru', guruController::class);
+Route::resource('guru', guruController::class) ->except(['show']);
 Route::resource('mapel', mapelController::class);
 Route::resource('mapel11', mapel11Controller::class);
 Route::resource('mapel12', mapel12Controller::class);
@@ -65,4 +66,10 @@ Route::resource('laporan', laporanController::class);
 Route::resource('perhitungan_gaji', perhitungan_gajiController::class);
 Route::get('/logoutAdmin', [login_adminController::class, 'logoutAdmin'])->name('logoutAdmin');
 });
+
+Route::get('/guru/layout', [guruController::class, 'layout'])->name('guru.layout');
+
+Route::get('/guru/info', [guruController::class, 'infoguru'])->name('guru.info');
+
+
 
