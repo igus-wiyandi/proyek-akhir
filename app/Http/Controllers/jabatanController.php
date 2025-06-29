@@ -29,12 +29,14 @@ class jabatanController extends Controller
         $request->validate([
             'guru_id' => 'required|exists:guru,id',
             'kategori_id' => 'required|exists:kategori,id',
+            'honor' => 'required|integer|min:0',
         ]);
 
 
         jabatan::create([
             "guru_id" => $request->guru_id,
             "kategori_id" => $request->kategori_id,
+            "honor" => $request->honor,
         ]);
 
         return redirect()->route('jabatan.index')->with('success', 'Jabatan Berhasil Ditambah');
@@ -54,10 +56,12 @@ class jabatanController extends Controller
         $request->validate([
             'guru_id' => 'required|exists:guru,id',
             'kategori_id' => 'required|exists:kategori,id',
+            'honor' => 'required|integer|min:0',
         ]);
 
             $jabatan->guru_id = $request->guru_id;
             $jabatan->kategori_id = $request->kategori_id;
+            $jabatan->honor = $request->honor;
 
         $jabatan->save();
         return redirect()->route('jabatan.index')->with('success', 'Jabatan Berhasil Ubah');

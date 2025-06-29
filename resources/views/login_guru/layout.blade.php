@@ -68,18 +68,22 @@
 
       <button type="submit"
         class="w-full bg-teal-500 py-2 rounded-xl text-white font-bold mt-7 cursor-pointer hover:bg-teal-600 duration-150">
-        Masuk
+        Login
       </button>
+
+     <div class="flex flex-col w-full mt-5 relative">
+  <a href="{{ route('registerguru') }}"
+     class="w-full bg-teal-500 py-2 rounded-xl text-white font-bold cursor-pointer hover:bg-teal-600 duration-150 text-center">
+    Sign Up
+  </a>
+</div>
 
       <div class="flex text-sm text-slate-600 font-semibold mt-5">
         <p class="mr-1">Bukan Guru?</p>
         <a href="{{ route('loginAdmin') }}" class="hover:underline text-teal-500">Kembali ke Admin!</a>
       </div>
 
-      <div class="flex text-sm text-slate-600 font-semibold mt-5">
-        <p class="mr-1">Belum Punya Akun?</p>
-        <a href="{{ route('registerguru') }}" class="hover:underline text-teal-500">Register</a>
-      </div>
+
 
     </form>
   </main>

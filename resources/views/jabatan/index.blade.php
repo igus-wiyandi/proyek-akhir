@@ -32,6 +32,7 @@
                             <th class="p-3 text-left text-teal-800 font-semibold border-b border-teal-200">No</th>
                             <th class="p-3 text-left text-teal-800 font-semibold border-b border-teal-200">Nama </th>
                             <th class="p-3 text-left text-teal-800 font-semibold border-b border-teal-200">Jabatan </th>
+                            <th class="p-3 text-left text-teal-800 font-semibold border-b border-teal-200">Honor </th>
                             <th class="p-3 text-left text-teal-800 font-semibold border-b border-teal-200">Aksi</th>
                         </tr>
                     </thead>
@@ -54,6 +55,9 @@
                             <td class="p-3 border border-gray-200">
                                 {{ $j->kategori->nama }}
                             </td>
+
+                            <td class="px-4 py-2">Rp {{ number_format($j->honor, 0, ',', '.') }}</td>
+
 
                             <td class="p-3 border border-gray-200">
                             <div class="flex space-x-3">

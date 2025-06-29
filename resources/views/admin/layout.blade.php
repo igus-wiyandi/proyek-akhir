@@ -73,6 +73,7 @@
             border-radius: 10px;
         }
     </style>
+    @stack('styles')
 </head>
 
 <body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
@@ -94,23 +95,7 @@
 
             <!-- Sidebar Content -->
             <div class="flex-1 overflow-y-auto custom-scrollbar p-4">
-                <!-- Dashboard Section -->
-                <div class="mb-8">
-                    <div class="flex items-center mb-4">
-                        <div class="w-8 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full mr-3"></div>
-                        <p class="uppercase text-xs font-semibold text-gray-400 tracking-wider">Dashboard</p>
-                    </div>
-
-                    <nav class="space-y-2">
-                        <a href="#" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
-                            <div class="w-10 h-10 bg-blue-100 group-hover:bg-blue-200 rounded-lg flex items-center justify-center mr-3 transition-colors">
-                                <i class="fad fa-chart-pie text-blue-600 text-sm"></i>
-                            </div>
-                            <span class="font-medium">Dashboard</span>
-                        </a>
-                    </nav>
-                </div>
-
+    
                 <!-- Admin Section -->
                 <div class="mb-8">
                     <div class="flex items-center mb-4">
@@ -143,7 +128,7 @@
                     </div>
 
                     <nav class="space-y-2">
-                        <a href="#" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
+                        <a href="{{ route('absensi.index') }}" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
                             <div class="w-10 h-10 bg-purple-100 group-hover:bg-purple-200 rounded-lg flex items-center justify-center mr-3 transition-colors">
                                 <i class="fad fa-clock text-purple-600 text-sm"></i>
                             </div>
@@ -196,7 +181,7 @@
                             <span class="font-medium">Jabatan</span>
                         </a>
 
-                        <a href="#" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
+                        <a href="{{ route('perhitungan_gaji.index') }}" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
                             <div class="w-10 h-10 bg-yellow-100 group-hover:bg-yellow-200 rounded-lg flex items-center justify-center mr-3 transition-colors">
                                 <i class="fad fa-calculator text-yellow-600 text-sm"></i>
                             </div>
@@ -222,21 +207,6 @@
                             </div>
                         </div>
                     </nav>
-                </div>
-
-                <!-- Download Section -->
-                <div class="mb-8">
-                    <div class="flex items-center mb-4">
-                        <div class="w-8 h-0.5 bg-gradient-to-r from-green-500 to-teal-500 rounded-full mr-3"></div>
-                        <p class="uppercase text-xs font-semibold text-gray-400 tracking-wider">Download</p>
-                    </div>
-
-                    <a href="#" class="nav-link group flex items-center px-4 py-3 text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-all duration-300">
-                        <div class="w-10 h-10 bg-teal-100 group-hover:bg-teal-200 rounded-lg flex items-center justify-center mr-3 transition-colors">
-                            <i class="fad fa-download text-teal-600 text-sm"></i>
-                        </div>
-                        <span class="font-medium">Download Report</span>
-                    </a>
                 </div>
             </div>
 
@@ -304,6 +274,7 @@
             chevron.classList.toggle('rotate-180');
         });
     </script>
+     @stack('scripts')
 </body>
 
 </html>

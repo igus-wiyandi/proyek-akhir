@@ -29,6 +29,7 @@ class loginAdminRules implements ValidationRule
             $loginStatus = true;
             Session::put('loginStatus', true);
             Session::put('ambilUser', $admin);
+            Session::put('isAdmin', true);
         }
 
         if (! $loginStatus) {

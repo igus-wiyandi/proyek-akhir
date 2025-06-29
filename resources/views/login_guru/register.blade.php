@@ -13,10 +13,8 @@
   <main class="w-full max-w-5xl rounded-2xl flex shadow-2xl overflow-hidden">
     <section class="w-full md:w-1/2 bg-teal-500 rounded-l-2xl p-8 flex flex-col items-center justify-center">
       <h1 class="text-white font-bold text-3xl md:text-4xl mb-6">Daftar Sekarang</h1>
-      <p class="text-white font-semibold text-sm text-center">Buat akun baru dan mulailah perjalanan Anda bersama kami!</p>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-64 md:h-80 mt-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-      </svg>
+      <p class="text-white font-semibold text-sm text-center">Buat akun baru dan mulailah perjalanan Anda</p>
+      <img src="{{ asset('images/register.png.png') }}" alt="" class="h-96 mt-10">
     </section>
 
     <section class="w-full md:w-1/2 bg-white rounded-r-2xl p-8 flex flex-col items-center">

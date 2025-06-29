@@ -41,6 +41,13 @@
                 </select>
             </div>
 
+            <div class="mb-4">
+                <label for="honor" class="block text-sm font-medium text-gray-700">Honor Tambahan (Rp)</label>
+                <input type="number" name="honor" id="honor"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    value="{{ old('honor', $j->honor ?? 0) }}">
+            </div>
+
             <div class="flex items-center justify-between">
                 <button type="submit" class="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors">Ubah</button>
             </div>

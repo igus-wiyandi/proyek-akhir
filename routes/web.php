@@ -54,17 +54,19 @@ Route::get('/mapel12/{id}/pilih-guru12', [mapel12Controller::class, 'showPilihGu
 Route::post('/mapel12/{id}/pilih-guru12', [mapel12Controller::class, 'simpanGuru12']);
 
 Route::middleware(LoggedInAdmin::class)->group(function () {
-Route::resource('admin', adminController::class);
-Route::resource('guru', guruController::class) ->except(['show']);
-Route::resource('mapel', mapelController::class);
-Route::resource('mapel11', mapel11Controller::class);
-Route::resource('mapel12', mapel12Controller::class);
-Route::resource('absensi', absensiController::class);
-Route::resource('kategori', kategoriController::class);
-Route::resource('jabatan', jabatanController::class);
-Route::resource('laporan', laporanController::class);
-Route::resource('perhitungan_gaji', perhitungan_gajiController::class);
-Route::get('/logoutAdmin', [login_adminController::class, 'logoutAdmin'])->name('logoutAdmin');
+    Route::post('/absensi/preview', [AbsensiController::class, 'preview'])->name('absensi.preview');
+    Route::post('/perhitungan_gaji/range', [perhitungan_gajiController::class, 'filterByDateRange'])->name('perhitungan_gaji.range');
+    Route::resource('admin', adminController::class);
+    Route::resource('guru', guruController::class) ->except(['show']);
+    Route::resource('mapel', mapelController::class);
+    Route::resource('mapel11', mapel11Controller::class);
+    Route::resource('mapel12', mapel12Controller::class);
+    Route::resource('absensi', absensiController::class);
+    Route::resource('kategori', kategoriController::class);
+    Route::resource('jabatan', jabatanController::class);
+    Route::resource('laporan', laporanController::class);
+    Route::resource('perhitungan_gaji', perhitungan_gajiController::class);
+    Route::get('/logoutAdmin', [login_adminController::class, 'logoutAdmin'])->name('logoutAdmin');
 });
 
 Route::get('/guru/layout', [guruController::class, 'layout'])->name('guru.layout');

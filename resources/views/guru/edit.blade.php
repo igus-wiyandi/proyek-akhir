@@ -83,10 +83,19 @@
                     </div>
                 </div>
 
-                <button type="submit"
-                    class="w-full bg-teal-500 py-2.5 rounded-lg text-white font-semibold text-base hover:bg-teal-600 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center">
-                    Simpan Perubahan
-                </button>
+                <div class="w-full space-y-4">
+                    <button type="submit"
+                            class="w-full bg-teal-500 py-2.5 rounded-lg text-white font-semibold text-base hover:bg-teal-600 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center">
+                            Simpan Perubahan
+                    </button>
+                     <a href="{{ route('guru.info') }}"  class="w-full bg-red-500 py-2.5 rounded-lg text-white font-semibold text-base hover:bg-red-600 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        Batal
+                     </a>
+
+                </div>
             </form>
         </section>
     </main>
