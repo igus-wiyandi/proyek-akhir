@@ -56,7 +56,7 @@
                                 {{ $j->kategori->nama }}
                             </td>
 
-                            <td class="px-4 py-2">Rp {{ number_format($j->honor, 0, ',', '.') }}</td>
+                            <td class="p-3 border border-gray-200">Rp {{ number_format($j->honor, 0, ',', '.') }}</td>
 
 
                             <td class="p-3 border border-gray-200">

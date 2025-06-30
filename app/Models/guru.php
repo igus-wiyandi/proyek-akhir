@@ -39,17 +39,6 @@ class guru extends Model
         return $this->hasMany(Status12::class);
     }
 
-    // public function jabatan()
-    // {
-    //     return $this->hasOneThrough(
-    //         jabatan::class,
-    //         absensi::class,
-    //         'guru_id',
-    //         'id',
-    //         'id',
-    //         'jabatan_id'
-    //     );
-    // }
 
     public function jabatan()
     {

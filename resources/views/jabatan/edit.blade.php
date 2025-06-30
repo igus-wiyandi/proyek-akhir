@@ -41,10 +41,10 @@
                 </select>
             </div>
 
-            <div class="mb-4">
-                <label for="honor" class="block text-sm font-medium text-gray-700">Honor Tambahan (Rp)</label>
+            <div class="mb-3">
+                <label for="honor" class="form-label">Honor Tambahan (Rp)</label>
                 <input type="number" name="honor" id="honor"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                    class="form-control w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"
                     value="{{ old('honor', $j->honor ?? 0) }}">
             </div>
 
