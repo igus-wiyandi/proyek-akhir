@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-class mapel extends Model
+class Mapel extends Model
 {
     use HasFactory;
     protected $table = 'mapel';
@@ -18,7 +18,7 @@ class mapel extends Model
     ];
     public function guru()
     {
-        return $this->belongsTo(guru::class, 'guru_id');
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
     public function status()
 {

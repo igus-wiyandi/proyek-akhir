@@ -1,21 +1,21 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\admin;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class adminController extends Controller
+class AdminController extends Controller
 {
     public function index()
     {
-        $admin = admin::all();
+        $admin = Admin::all();
         return view('admin.index', compact('admin'));
     }
 
     public function create()
     {
-        $admin = admin::all();
+        $admin = Admin::all();
         return view('admin.create', compact('admin'));
     }
 
@@ -33,7 +33,7 @@ class adminController extends Controller
             'email.required'=>'Email Tidak Boleh Kosong',
             'password.required'=>'Password Tidak Boleh Kosong',
         ]);
-        admin::create([
+        Admin::create([
             "nama" => $request->nama,
             "email" => $request->email,
             "password" => Hash::make($request->password),
@@ -41,12 +41,12 @@ class adminController extends Controller
         return redirect()->route('admin.index')->with('success', 'Admin Berhasil Ditambah');
     }
 
-    public function edit(admin $admin)
+    public function edit(Admin $admin)
     {
         return view('admin.edit', compact('admin'));
     }
 
-    public function update(Request $request, admin $admin)
+    public function update(Request $request, Admin $admin)
     {
         $request->validate([
             'nama' => 'min:5|string',
@@ -69,7 +69,7 @@ class adminController extends Controller
         return redirect()->route('admin.index')->with('success', 'Admin Berhasil Diubah');
     }
 
-    public function destroy(admin $admin)
+    public function destroy(Admin $admin)
     {
         $admin->delete();
         return redirect()->route('admin.index')->with('success', 'Admin Berhasil Dihapus');

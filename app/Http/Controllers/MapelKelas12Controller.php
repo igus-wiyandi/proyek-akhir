@@ -1,22 +1,22 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\mapel12;
-use App\Models\guru;
+use App\Models\MapelKelas12;
+use App\Models\Guru;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class mapel12Controller extends Controller
+class MapelKelas12Controller extends Controller
 {
     public function index(Request $request)
     {
-        $guru12 = guru::all();
+        $guru12 = Guru::all();
 
         $mingguOffset = (int) $request->query('minggu', 0);
         $startOfWeek = Carbon::now()->startOfWeek()->addWeeks($mingguOffset);
 
-        $mapel12 = mapel12::with('guru')->orderBy('tanggal')->orderBy('jam_mulai')->get();
+        $mapel12 = MapelKelas12::with('guru')->orderBy('tanggal')->orderBy('jam_mulai')->get();
 
 
         $mapel12->transform(function ($item) use ($startOfWeek) {
@@ -48,7 +48,7 @@ class mapel12Controller extends Controller
     }
 
     public function create(){
-        $mapel12 = mapel12::all();
+        $mapel12 = MapelKelas12::all();
         return view('mapel12.create', compact('mapel12'));
     }
 
@@ -65,7 +65,7 @@ class mapel12Controller extends Controller
         $jam_mulai = $request->jam_mulai . ':00';
         $jam_selesai = $request->jam_selesai . ':00';
 
-        mapel12:: create([
+        MapelKelas12:: create([
             "nama" => $request->nama,
             "jam_mulai" => $jam_mulai,
             "jam_selesai" => $jam_selesai,
@@ -79,7 +79,7 @@ class mapel12Controller extends Controller
 
     public function edit($id)
     {
-        $mapel12 = mapel12::find($id);
+        $mapel12 = MapelKelas12::find($id);
         $mapel12->tanggal = Carbon::parse($mapel12->tanggal)->format('Y-m-d');
         return view('mapel12.edit', compact('mapel12'));
     }
@@ -96,7 +96,7 @@ class mapel12Controller extends Controller
     $jam_mulai = $request->jam_mulai . ':00';
     $jam_selesai = $request->jam_selesai . ':00';
 
-    $mapel12 = mapel12::findOrFail($id);
+    $mapel12 = MapelKelas12::findOrFail($id);
     $mapel12->update([
         'nama' => $request->nama,
         'tanggal' => $request->tanggal,
@@ -107,7 +107,7 @@ class mapel12Controller extends Controller
     return redirect()->route('mapel12.index')->with('success', 'Pelajaran Berhasil Diubah');
 }
 
-    public function destroy(mapel12 $mapel12)
+    public function destroy(MapelKelas12 $mapel12)
     {
         $mapel12->delete();
         return redirect()->route('mapel12.index')->with('success', 'Pelajaran Berhasil Dihapus');
@@ -115,8 +115,8 @@ class mapel12Controller extends Controller
 
     public function showPilihGuru12(Request $request, $id)
     {
-        $mapel12 = mapel12::findOrFail($id);
-        $guru12 = guru::all();
+        $mapel12 = MapelKelas12::findOrFail($id);
+        $guru12 = Guru::all();
         $mapel12->guru_id = $request->input('guru_id') ?: null;
         $mapel12->save();
         return view('mapel12.index', compact('mapel12', 'guru12'));
@@ -124,7 +124,7 @@ class mapel12Controller extends Controller
 
     public function simpanGuru12(Request $request, $id)
     {
-        $mapel12 = mapel12::findOrFail($id);
+        $mapel12 = MapelKelas12::findOrFail($id);
         $mapel12->guru_id = $request->guru_id;
         $mapel12->save();
 

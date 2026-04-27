@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Rules\loginGuruRules;
+use App\Rules\LoginGuruRules;
 use Illuminate\Http\Request;
-use App\Models\guru;
+use App\Models\Guru;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
 
-class login_guruController extends Controller
+class LoginGuruController extends Controller
 {
 
     public function loginGuru()
@@ -44,7 +44,7 @@ class login_guruController extends Controller
             'alamat.required'=>'Alamat Tidak Boleh Kosong',
         ]);
 
-        guru::create([
+        Guru::create([
             "nama" => $request->nama,
             "email" => $request->email,
             "password" => Hash::make($request->password),
@@ -58,11 +58,11 @@ class login_guruController extends Controller
 {
     $request->validate([
         'email' => ['required', 'email'],
-        'password' => ['required', new loginGuruRules($request)],
+        'password' => ['required', new LoginGuruRules($request)],
     ]);
 
 
-    $guru = guru::where('email', $request->email)->first();
+    $guru = Guru::where('email', $request->email)->first();
 
 
     Session::put('guru_id', $guru->id);

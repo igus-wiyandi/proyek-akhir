@@ -5,20 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-use App\Models\perhitungan_gaji;
-use App\Models\absensi;
-use App\Models\guru;
-use App\Models\jabatan;
+use App\Models\PerhitunganGaji;
+use App\Models\Absensi;
+use App\Models\Guru;
+use App\Models\Jabatan;
 use Carbon\Carbon;
 
-class perhitungan_gajiController extends Controller
+class PerhitunganGajiController extends Controller
 {
     public function index(Request $request)
     {
         $isAdmin = Session::get('isAdmin');
-        $perhitungan_gaji = perhitungan_gaji::with('jabatan')
+        $perhitungan_gaji = PerhitunganGaji::with('jabatan')
             ->orderBy('created_at', 'desc');
-
 
         return view('gaji.index', [
             'gaji' => $perhitungan_gaji,
@@ -42,16 +41,16 @@ class perhitungan_gajiController extends Controller
             return !$date->isWeekend();
         }, $endDate);
 
-        $guru = guru::with(['jabatan.kategori', 'latestAbsensi'])->get();
+        $guru = Guru::with(['jabatan.kategori', 'latestAbsensi'])->get();
 
         if (!$isAdmin) {
-            $guru = guru::with(['jabatan.kategori', 'latestAbsensi'])
+            $guru = Guru::with(['jabatan.kategori', 'latestAbsensi'])
                 ->where('id', Session::get('ambilUser')->id)
                 ->get();
         }
 
 
-        $absensi = absensi::whereBetween('tanggal', [$startDate, $endDate])->get();
+        $absensi = Absensi::whereBetween('tanggal', [$startDate, $endDate])->get();
 
         $dataGaji = [];
         $tarifPerJam = 45000;
@@ -69,8 +68,8 @@ class perhitungan_gajiController extends Controller
 
             $gajiMengajar = $jamHadir * $tarifPerJam;
 
-            $jabatan = $item->jabatan()->latest()->first();
-            $kategori = $jabatan->kategori ?? null;
+            $jabatan = $item->Jabatan()->latest()->first();
+            $kategori = $jabatan->Kategori ?? null;
 
             $honorTambahan = $jabatan->honor ?? 0;
             $gajiTotal = $gajiMengajar + $honorTambahan;

@@ -3,7 +3,7 @@
 namespace App\Rules;
 
 use Closure;
-use App\Models\admin;
+use App\Models\Admin;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -23,7 +23,7 @@ class loginAdminRules implements ValidationRule
         $password = $this->request->input('password');
         $loginStatus = false;
 
-        $admin = admin::where('email', $email)->first();
+        $admin = Admin::where('email', $email)->first();
 
         if ($admin && Hash::check($password, $admin->password)) {
             $loginStatus = true;

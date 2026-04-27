@@ -118,7 +118,7 @@
                 <div class="px-6 mb-6">
                     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-4">Menu Guru</h3>
 
-                    <!-- Rekap Absen -->
+                    <!-- Profil guru -->
                     <a href="{{ route('guru.info') }}" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
                         <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-yellow-200 transition-colors">
                             <i class="fas fa-user-circle text-yellow-600 text-sm"></i>
@@ -126,6 +126,7 @@
                         <span class="font-medium">Profil</span>
                     </a>
 
+                    <!-- Rekap absen -->
                     <a href="{{ route('absensi.index') }}" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
                         <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 transition-colors">
                             <i class="fas fa-calendar-check text-blue-600 text-sm"></i>

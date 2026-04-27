@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class perhitungan_gaji extends Model
+class PerhitunganGaji extends Model
 {
     use HasFactory;
     protected $table = 'gaji';
@@ -14,6 +14,6 @@ class perhitungan_gaji extends Model
 
     public function jabatan()
     {
-        return $this->belongsTo(jabatan::class, 'jabatan_id');
+        return $this->belongsTo(Jabatan::class, 'jabatan_id');
     }
 }

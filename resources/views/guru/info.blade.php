@@ -4,7 +4,7 @@
     <main class="w-full max-w-3xl mx-auto my-10 px-4 sm:px-6 lg:px-8">
         <section class="bg-white rounded-2xl shadow-lg overflow-hidden bg-gradient-to-br from-teal-50 to-white p-6 sm:p-8 flex flex-col items-center transition-all duration-300">
             <div class="text-center mb-8">
-                <h1 class="text-gray-800 font-bold text-2xl sm:text-3xl md:text-4xl mb-3 tracking-tight">Informasi Pribadi</h1>
+                <h1 class="text-gray-800 font-bold text-2xl sm:text-3xl md:text-4xl mb-3 tracking-tight">Data Pribadi</h1>
             </div>
 
             @if ($errors->any())
@@ -67,7 +67,7 @@
                 </div>
 
                 <a href="{{ route('guru.edit', $guru->id) }}"                     class="w-full bg-teal-500 py-2.5 rounded-lg text-white font-semibold text-base hover:bg-teal-600 transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center">
-                    Perbarui Informasi
+                    Edit Data
                 </a>
             </form>
         </section>

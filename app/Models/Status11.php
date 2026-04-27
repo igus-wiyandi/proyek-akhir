@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\guru;
-use App\Models\mapel11;
+use App\Models\Guru;
+use App\Models\MapelKelas11;
 class Status11 extends Model
 {
     use HasFactory;
@@ -18,12 +18,12 @@ class Status11 extends Model
     ];
     public function guru()
     {
-        return $this->belongsTo(guru::class, 'guru_id');
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
 
     public function mapel11()
     {
-        return $this->belongsTo(mapel11::class, 'mapel11_id');
+        return $this->belongsTo(MapelKelas11::class, 'mapel11_id');
     }
 
 }

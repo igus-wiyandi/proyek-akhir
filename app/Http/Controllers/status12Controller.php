@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Session;
-use App\Models\mapel12;
+use App\Models\MapelKelas12;
 use Illuminate\Http\Request;
 
-class status12Controller extends Controller
+class Status12Controller extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +16,7 @@ class status12Controller extends Controller
         $mingguOffset = (int) $request->query('minggu', 0);
 
 
-        $mapel12 = mapel12::with(['status12' => function ($q) use ($guruId) {
+        $mapel12 = MapelKelas12::with(['status12' => function ($q) use ($guruId) {
             $q->where('guru_id', $guruId);
         }])
         ->where('guru_id', $guruId)

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class laporanController extends Controller
+
+class LaporanController extends Controller
 {
-    //
+
 }

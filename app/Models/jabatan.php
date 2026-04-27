@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class jabatan extends Model
+
+class Jabatan extends Model
 {
     use HasFactory;
     protected $table = 'jabatan';
@@ -13,7 +15,7 @@ class jabatan extends Model
 
     public function guru()
     {
-        return $this->belongsTo(guru::class, 'guru_id');
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
 
     public function kategori()

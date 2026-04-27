@@ -1,25 +1,25 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\mapel11;
-use App\Models\guru;
+use App\Models\Mapel;
+use App\Models\Guru;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-class mapel11Controller extends Controller
+class MapelKelas10Controller extends Controller
 {
     public function index(Request $request)
     {
-        $guru11 = guru::all();
+        $guru = Guru::all();
 
         $mingguOffset = (int) $request->query('minggu', 0);
         $startOfWeek = Carbon::now()->startOfWeek()->addWeeks($mingguOffset);
 
-        $mapel11 = mapel11::with('guru')->orderBy('tanggal')->orderBy('jam_mulai')->get();
+        $mapel = Mapel::with('guru')->orderBy('tanggal')->orderBy('jam_mulai')->get();
 
 
-        $mapel11->transform(function ($item) use ($startOfWeek) {
+        $mapel = $mapel->transform(function ($item) use ($startOfWeek) {
             $tanggal = Carbon::parse($item->tanggal);
             $hariKe = $tanggal->dayOfWeekIso - 1;
             $item->tanggal_dihitung = $startOfWeek->copy()->addDays($hariKe)->toDateString();
@@ -28,27 +28,29 @@ class mapel11Controller extends Controller
             return $item->tanggal_dihitung . ' ' . $item->jam_mulai;
         })->values();
 
-        $perPage = 7;
+        $perPage = 8;
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $currentItems = $mapel11->slice(($currentPage - 1) * $perPage, $perPage)->all();
+        $currentItems = $mapel->slice(($currentPage - 1) * $perPage, $perPage)->all();
         $paginatedMapel = new LengthAwarePaginator(
             $currentItems,
-            $mapel11->count(),
+            $mapel->count(),
             $perPage,
             $currentPage,
             ['path' => $request->url(), 'query' => $request->query()]
         );
 
-        return view('mapel11.index', [
-            'mapel11' => $paginatedMapel,
-            'guru11' => $guru11,
+        return view('mapel.index', [
+            'mapel' => $paginatedMapel,
+            'guru' => $guru,
             'mingguOffset' => $mingguOffset
         ]);
     }
 
+
+
     public function create(){
-        $mapel11= mapel11::all();
-        return view('mapel11.create', compact('mapel11'));
+        $mapel= Mapel::all();
+        return view('mapel.create', compact('mapel'));
     }
 
     public function store(Request $request)
@@ -64,7 +66,7 @@ class mapel11Controller extends Controller
         $jam_mulai = $request->jam_mulai . ':00';
         $jam_selesai = $request->jam_selesai . ':00';
 
-        mapel11:: create([
+        Mapel:: create([
             "nama" => $request->nama,
             "jam_mulai" => $jam_mulai,
             "jam_selesai" => $jam_selesai,
@@ -72,15 +74,14 @@ class mapel11Controller extends Controller
             "guru_id" => $request->guru_id,
         ]);
 
-
-        return redirect()->route('mapel11.index')->with('success', 'Pelajaran Berhasil Ditambah');
+        return redirect()->route('mapel.index')->with('success', 'Pelajaran Berhasil Ditambah');
     }
 
     public function edit($id)
     {
-        $mapel11 = mapel11::find($id);
-        $mapel11->tanggal = Carbon::parse($mapel11->tanggal)->format('Y-m-d');
-        return view('mapel11.edit', compact('mapel11'));
+        $mapel = Mapel::find($id);
+        $mapel->tanggal = Carbon::parse($mapel->tanggal)->format('Y-m-d');
+        return view('mapel.edit', compact('mapel'));
     }
 
     public function update(Request $request, $id)
@@ -95,38 +96,39 @@ class mapel11Controller extends Controller
     $jam_mulai = $request->jam_mulai . ':00';
     $jam_selesai = $request->jam_selesai . ':00';
 
-    $mapel11 = Mapel11::findOrFail($id);
-    $mapel11->update([
+    $mapel = Mapel::findOrFail($id);
+    $mapel->update([
         'nama' => $request->nama,
         'tanggal' => $request->tanggal,
         'jam_mulai' => $jam_mulai,
         'jam_selesai' => $jam_selesai,
     ]);
 
-    return redirect()->route('mapel11.index')->with('success', 'Pelajaran Berhasil Diubah');
+    return redirect()->route('mapel.index')->with('success', 'Pelajaran Berhasil Diubah');
 }
 
-    public function destroy(mapel11 $mapel11)
+
+    public function destroy(Mapel $mapel)
     {
-        $mapel11->delete();
-        return redirect()->route('mapel11.index')->with('success', 'Pelajaran Berhasil Dihapus');
+        $mapel->delete();
+        return redirect()->route('mapel.index')->with('success', 'Pelajaran Berhasil Dihapus');
     }
 
-    public function showPilihGuru11(Request $request, $id)
+    public function showPilihGuru(Request $request, $id)
     {
-        $mapel11 = mapel11::findOrFail($id);
-        $guru11 = guru::all();
-        $mapel11->guru_id = $request->input('guru_id') ?: null;
-        $mapel11->save();
-        return view('mapel11.index', compact('mapel11', 'guru11'));
+        $mapel = Mapel::findOrFail($id);
+        $guru = Guru::all();
+        $mapel->guru_id = $request->input('guru_id') ?: null;
+        $mapel->save();
+        return view('mapel.index', compact('mapel', 'guru'));
     }
 
-    public function simpanGuru11(Request $request, $id)
+    public function simpanGuru(Request $request, $id)
     {
-        $mapel11 = mapel11::findOrFail($id);
-        $mapel11->guru_id = $request->guru_id;
-        $mapel11->save();
+        $mapel = Mapel::findOrFail($id);
+        $mapel->guru_id = $request->guru_id;
+        $mapel->save();
 
-        return redirect()->route('mapel11.index')->with('success', 'Guru Berhasil Dipilih');
+        return redirect('/mapel')->with('success', 'Guru Berhasil Dipilih.');
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Rules;
 
 use Closure;
-use App\Models\guru;
+use App\Models\Guru;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -23,7 +23,7 @@ class loginGuruRules implements ValidationRule
         $password = $this->request->input('password');
         $loginStatus = false;
 
-        $guru = guru::where('email', $email)->first();
+        $guru = Guru::where('email', $email)->first();
 
         if ($guru && Hash::check($password, $guru->password)) {
             $loginStatus = true;

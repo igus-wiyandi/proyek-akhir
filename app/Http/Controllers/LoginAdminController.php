@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Rules\loginAdminRules;
+use App\Rules\LoginAdminRules;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
 
-class login_adminController extends Controller
+class LoginAdminController extends Controller
 {
 
     public function loginAdmin()
@@ -20,7 +20,7 @@ class login_adminController extends Controller
     {
         $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required', new loginAdminRules($request)],
+            'password' => ['required', new LoginAdminRules($request)],
         ]);
 
         return redirect()->route('admin.index');

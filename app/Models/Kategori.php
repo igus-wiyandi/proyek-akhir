@@ -16,6 +16,6 @@ class Kategori extends Model
 
     public function jabatan()
     {
-        return $this->hasMany(jabatan::class, 'jabatan_id');
+        return $this->hasMany(Jabatan::class, 'jabatan_id');
     }
 }

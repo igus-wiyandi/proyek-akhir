@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-class mapel12 extends Model
+class MapelKelas11 extends Model
 {
     use HasFactory;
-    protected $table = 'mapel12';
+    protected $table = 'mapel11';
 
     protected $fillable = [
         'nama',
@@ -18,11 +18,10 @@ class mapel12 extends Model
     ];
     public function guru()
     {
-        return $this->belongsTo(guru::class, 'guru_id');
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
-
-    public function status12()
+    public function status11()
     {
-        return $this->hasMany(Status12::class, 'mapel12_id');
+        return $this->hasMany(Status11::class, 'mapel11_id');
     }
 }

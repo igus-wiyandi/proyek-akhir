@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\guru;
+use App\Models\Guru;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 
-class guruController extends Controller
+class GuruController extends Controller
 {
     public function index()
     {
-        $guru = guru::paginate(5);
+        $guru = Guru::paginate(5);
         return view('guru.index', compact('guru'));
     }
 
@@ -36,7 +36,7 @@ class guruController extends Controller
             'alamat.required'=>'Alamat Tidak Boleh Kosong',
         ]);
 
-        guru::create([
+        Guru::create([
             "nama" => $request->nama,
             "email" => $request->email,
             "password" => Hash::make($request->password),
@@ -48,7 +48,7 @@ class guruController extends Controller
 
     public function edit($id)
     {
-        $guru = guru::findOrFail($id);
+        $guru = Guru::findOrFail($id);
         return view('guru.edit', compact('guru'));
     }
 
@@ -61,12 +61,12 @@ class guruController extends Controller
             return redirect()->route('loginGuru')->with('error', 'Silakan login dulu.');
         }
 
-        $guru = guru::findOrFail($guruId);
+        $guru = Guru::findOrFail($guruId);
 
         return view('tampil_guru.layout', compact('guru'));
     }
 
-    public function update(Request $request, guru $guru)
+    public function update(Request $request, Guru $guru)
     {
 
         $request->validate([
@@ -96,7 +96,7 @@ class guruController extends Controller
         return redirect()->route('guru.info')->with('success', 'Guru Berhasil Diubah');
     }
 
-    public function destroy(guru $guru)
+    public function destroy(Guru $guru)
     {
         $guru->delete();
         return redirect()->route('guru.index')->with('success', 'Guru Berhasil Dihapus');
@@ -109,14 +109,14 @@ class guruController extends Controller
             return redirect()->route('loginGuru')->with('error', 'Silakan login dulu.');
         }
 
-        $guru = guru::findOrFail($guruId);
+        $guru = Guru::findOrFail($guruId);
 
         return view('guru.info', compact('guru'));
     }
 
     public function show($id)
 {
-    $guru = guru::findOrFail($id);
+    $guru = Guru::findOrFail($id);
     return view('guru.show', compact('guru'));
 }
 

@@ -4,9 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-class guru extends Model
+
+use App\Models\Mapel;
+use App\Models\Status10;
+use App\Models\Status11;
+use App\Models\Status12;
+use App\Models\Jabatan;
+use App\Models\Absensi;
+
+class Guru extends Model
 {
     use HasFactory;
+
     protected $table = 'guru';
 
     protected $fillable = [
@@ -15,14 +24,12 @@ class guru extends Model
         'password',
         'no_hp',
         'alamat',
-
     ];
 
     public function mapel()
     {
-        return $this->hasMany(mapel::class, 'guru_id');
+        return $this->hasMany(Mapel::class, 'guru_id');
     }
-
 
     public function status()
     {
@@ -39,21 +46,13 @@ class guru extends Model
         return $this->hasMany(Status12::class);
     }
 
-
     public function jabatan()
     {
-    return $this->hasOne(jabatan::class)->latestOfMany();
+        return $this->hasOne(Jabatan::class)->latestOfMany();
     }
 
-
-    public function jabatanTerakhir()
-    {
-        return $this->belongsTo(jabatan::class, 'jabatan_id')
-            ->through('absensi')
-            ->whereLatest('tanggal');
-    }
     public function latestAbsensi()
     {
-        return $this->hasOne(absensi::class, 'guru_id')->latestOfMany('tanggal');
+        return $this->hasOne(Absensi::class, 'guru_id')->latestOfMany('tanggal');
     }
 }
