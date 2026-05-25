@@ -3,9 +3,7 @@
 namespace App\Rules;
 
 use Closure;
-use App\Models\Admin;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class loginAdminRules implements ValidationRule
@@ -19,21 +17,19 @@ class loginAdminRules implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $email = $this->request->input('email');
-        $password = $this->request->input('password');
-        $loginStatus = false;
+        $credentials = [
+            'email'    => $this->request->input('email'),
+            'password' => $this->request->input('password'),
+        ];
 
-        $admin = Admin::where('email', $email)->first();
-
-        if ($admin && Hash::check($password, $admin->password)) {
-            $loginStatus = true;
-            Session::put('loginStatus', true);
-            Session::put('ambilUser', $admin);
-            Session::put('isAdmin', true);
+        if (!Auth::attempt($credentials)) {
+            $fail('Email atau password salah.');
+            return;
         }
 
-        if (! $loginStatus) {
-            $fail('Email atau password salah.');
+        if (Auth::user()->role !== 'admin') {
+            Auth::logout();
+            $fail('Akun ini bukan akun admin.');
         }
     }
 }

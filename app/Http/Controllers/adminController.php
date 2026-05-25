@@ -1,7 +1,9 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -9,36 +11,45 @@ class AdminController extends Controller
 {
     public function index()
     {
-        $admin = Admin::all();
+        $admin = Admin::with('user')->get();
         return view('admin.index', compact('admin'));
     }
 
     public function create()
     {
-        $admin = Admin::all();
-        return view('admin.create', compact('admin'));
+        return view('admin.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|min:5|string',
-            'email' => 'required|email|unique:admin|string',
+            'nama'     => 'required|min:5|string',
+            'email'    => 'required|email|unique:users,email|string',
             'password' => 'required|min:5|string',
         ], [
-            'nama.min'=>'Nama minimal 5 karakter',
-            'email.unique'=>'Email sudah dipakai',
-            'password.min'=>'Password minimal 5 karakter',
-            'nama.required'=>'Nama Tidak Boleh Kosong',
-            'email.required'=>'Email Tidak Boleh Kosong',
-            'password.required'=>'Password Tidak Boleh Kosong',
+            'nama.min'          => 'Nama minimal 5 karakter',
+            'nama.required'     => 'Nama tidak boleh kosong',
+            'email.unique'      => 'Email sudah dipakai',
+            'email.required'    => 'Email tidak boleh kosong',
+            'password.min'      => 'Password minimal 5 karakter',
+            'password.required' => 'Password tidak boleh kosong',
         ]);
+
+        // Simpan ke tabel users
+        $user = User::create([
+            'name'     => $request->nama,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => 'admin',
+        ]);
+
+        // Simpan ke tabel admin
         Admin::create([
-            "nama" => $request->nama,
-            "email" => $request->email,
-            "password" => Hash::make($request->password),
+            'user_id' => $user->id,
+            'nama'    => $request->nama,
         ]);
-        return redirect()->route('admin.index')->with('success', 'Admin Berhasil Ditambah');
+
+        return redirect()->route('admin.index')->with('success', 'Admin berhasil ditambah');
     }
 
     public function edit(Admin $admin)
@@ -49,29 +60,44 @@ class AdminController extends Controller
     public function update(Request $request, Admin $admin)
     {
         $request->validate([
-            'nama' => 'min:5|string',
-            'email' => 'email|string',
+            'nama'     => 'required|min:5|string',
+            'email'    => 'required|email|unique:users,email,' . $admin->user_id . '|string',
             'password' => 'nullable|min:5|string',
-        ],[
-            'nama.min'=>'Nama minimal 5 karakter',
-            'password.min'=>'Password minimal 5 karakter',
+        ], [
+            'nama.min'       => 'Nama minimal 5 karakter',
+            'nama.required'  => 'Nama tidak boleh kosong',
+            'email.unique'   => 'Email sudah dipakai',
+            'email.required' => 'Email tidak boleh kosong',
+            'password.min'   => 'Password minimal 5 karakter',
         ]);
 
+        // Update tabel admin
         $admin->nama = $request->nama;
-        $admin->email = $request->email;
-
-        if ($request->filled('password')) {
-            $admin->password = Hash::make($request->password);
-        }
-
         $admin->save();
 
-        return redirect()->route('admin.index')->with('success', 'Admin Berhasil Diubah');
+        // Update tabel users
+        $admin->user->name  = $request->nama;
+        $admin->user->email = $request->email;
+
+        if ($request->filled('password')) {
+            $admin->user->password = Hash::make($request->password);
+        }
+
+        $admin->user->save();
+
+        return redirect()->route('admin.index')->with('success', 'Admin berhasil diubah');
     }
 
-    public function destroy(Admin $admin)
-    {
-        $admin->delete();
-        return redirect()->route('admin.index')->with('success', 'Admin Berhasil Dihapus');
+   public function destroy(Admin $admin)
+{
+    // Cegah hapus akun sendiri
+    if ($admin->user_id === auth()->id()) {
+        return redirect()->route('admin.index')->with('error', 'Tidak dapat menghapus akun yang sedang digunakan.');
     }
+
+    // Hapus user → otomatis hapus admin karena cascade
+    $admin->user->delete();
+
+    return redirect()->route('admin.index')->with('success', 'Admin berhasil dihapus');
+}
 }

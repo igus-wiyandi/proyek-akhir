@@ -45,13 +45,7 @@
                      @endforelse
                     </tbody>
                 </table>
-                {{-- <div class="flex justify-between my-4">
-                    <a href="{{ route('status10.index', ['minggu' => $mingguOffset - 1]) }}"
-                       class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">Minggu Lalu</a>
 
-                    <a href="{{ route('status10.index', ['minggu' => $mingguOffset + 1]) }}"
-                       class="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded">Minggu Depan</a>
-                </div> --}}
             </div>
     </div>
 </div>

@@ -3,16 +3,33 @@
 <div class="w-full p-6 bg-gray-100 min-h-screen">
     <div class="w-full max-w-7xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
 
-        @if (session('success'))
-        <div
-            x-data="{ show: true }"
-            x-init="setTimeout(() => show = false, 3000)"
-            x-show="show"
-            x-transition
-            class="flex justify-center mt-4">
-            {{ session('success') }}
-        </div>
-        @endif
+@if (session('success'))
+    <div
+    x-data="{ show: true }"
+    x-init="setTimeout(() => show = false, 3000)"
+    x-show="show"
+    x-transition
+    class="mx-6 mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+    </svg>
+    <span class="font-semibold text-sm">{{ session('success') }}</span>
+    </div>
+@endif
+
+@if (session('error'))
+    <div
+    x-data="{ show: true }"
+    x-init="setTimeout(() => show = false, 3000)"
+    x-show="show"
+    x-transition
+    class="mx-6 mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+    </svg>
+    <span class="font-semibold text-sm">{{ session('error') }}</span>
+    </div>
+@endif
 
         <div class="bg-teal-600 p-4 flex justify-between items-center">
             <h2 class="text-xl font-semibold text-white">Admin</h2>
@@ -39,7 +56,7 @@
                     <tr class="hover:bg-teal-50 transition-colors">
                         <td class="p-3 border-b border-gray-200">{{ $no++ }}</td>
                         <td class="p-3 border-b border-gray-200">{{ $admins->nama }}</td>
-                        <td class="p-3 border-b border-gray-200">{{ $admins->email }}</td>
+                        <td class="p-3 border-b border-gray-200">{{ $admins->user->email }}</td>
                         <td class="p-3 border-b border-gray-200">
                             <div class="flex space-x-3">
                                 <a href="{{ route('admin.edit', $admins->id) }}" class="text-teal-600 hover:text-teal-800 transition-colors" title="Edit">
@@ -47,7 +64,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
                                 </a>
-                                <form action="{{ route('mapel.destroy', $admins->id) }}" method="POST" onsubmit="return confirm('Yakin ingin dihapus?')">
+                                <form action="{{ route('admin.destroy', $admins->id) }}" method="POST" onsubmit="return confirm('Yakin ingin dihapus?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="text-red-600 hover:text-red-800 transition-colors" title="Hapus">

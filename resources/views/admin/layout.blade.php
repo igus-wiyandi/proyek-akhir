@@ -87,7 +87,7 @@
                         <i class="fas fa-graduation-cap text-white text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-xl font-bold text-gray-800">{{ Session::get('ambilUser')->nama}}</h1>
+                        <h1 class="text-xl font-bold text-gray-800">{{ Auth::user()->admin->nama }}</h1>
                         <p class="text-sm text-gray-500">Admin Dashboard</p>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
 
             <!-- Sidebar Content -->
             <div class="flex-1 overflow-y-auto custom-scrollbar p-4">
-    
+
                 <!-- Admin Section -->
                 <div class="mb-8">
                     <div class="flex items-center mb-4">

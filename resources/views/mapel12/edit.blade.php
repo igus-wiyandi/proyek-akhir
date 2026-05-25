@@ -57,10 +57,15 @@
             </div>
 
 
-            <div class="flex items-center justify-between">
+            <div class="flex gap-3">
                 <button type="submit"
-                    class="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors">Ubah</button>
-            </div>
+                    class="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors">
+                    Simpan
+                </button>
+                <a href="{{ route('mapel12.index') }}"
+                    class="px-6 py-2 bg-gray-400 hover:bg-gray-500 text-white font-medium rounded-lg transition-colors">
+                    Batal
+                </a>
         </form>
     </div>
 </div>

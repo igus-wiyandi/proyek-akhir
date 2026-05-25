@@ -1,124 +1,150 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Guru;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
 
 class GuruController extends Controller
 {
     public function index()
     {
-        $guru = Guru::paginate(5);
+        $guru = Guru::with('user')->paginate(5);
         return view('guru.index', compact('guru'));
     }
 
+    public function create()
+    {
+        return view('guru.create');
+    }
 
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => 'required|min:5|string',
-            'email' => 'required|email|unique:admin|string',
+            'nama'     => 'required|min:5|string',
+            'nik'      => 'required|digits:16|unique:guru,nik',
+            'jenis_kelamin' => 'required|in:Pria,Wanita',
+            'email'    => 'required|email|unique:users,email',
             'password' => 'required|min:5|string',
-            'no_hp' => 'required|min:12|string',
-            'alamat' => 'required|min:5|string',
-        ],[
-            'nama.min'=>'Nama minimal 5 karakter',
-            'email.unique'=>'Email sudah dipakai',
-            'password.min'=>'Password minimal 5 karakter',
-            'no_hp.min'=>'Nomor HP minimal 12 karakter',
-            'alamat.min'=>'Alamat minimal 5 karakter',
-            'nama.required'=>'Nama Tidak Boleh Kosong',
-            'email.required'=>'Email Tidak Boleh Kosong',
-            'password.required'=>'Password Tidak Boleh Kosong',
-            'no_hp.required'=>'Nomor HP Tidak Boleh Kosong',
-            'alamat.required'=>'Alamat Tidak Boleh Kosong',
+            'no_hp'    => 'required|min:10|string',
+            'alamat'   => 'required|min:5|string',
+        ], [
+            'nama.required'     => 'Nama tidak boleh kosong',
+            'nama.min'          => 'Nama minimal 5 karakter',
+            'nik.required'      => 'NIK tidak boleh kosong',
+            'nik.digits'        => 'NIK harus 16 digit angka',
+            'nik.unique'        => 'NIK sudah terdaftar',
+            'jenis_kelamin.required' => 'Jenis kelamin tidak boleh kosong',
+            'jenis_kelamin.in'       => 'Jenis kelamin tidak valid',
+            'email.required'    => 'Email tidak boleh kosong',
+            'email.unique'      => 'Email sudah dipakai',
+            'password.required' => 'Password tidak boleh kosong',
+            'password.min'      => 'Password minimal 5 karakter',
+            'no_hp.required'    => 'Nomor HP tidak boleh kosong',
+            'no_hp.min'         => 'Nomor HP minimal 10 karakter',
+            'alamat.required'   => 'Alamat tidak boleh kosong',
+            'alamat.min'        => 'Alamat minimal 5 karakter',
         ]);
 
-        Guru::create([
-            "nama" => $request->nama,
-            "email" => $request->email,
-            "password" => Hash::make($request->password),
-            "no_hp" => $request->no_hp,
-            "alamat" => $request->alamat,
+        // Simpan ke tabel users
+        $user = User::create([
+            'name'     => $request->nama,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => 'guru',
         ]);
-        return redirect()->route('guru.index')->with('success', 'Guru Berhasil Ditambah');
+
+        // Simpan ke tabel guru
+        Guru::create([
+            'user_id' => $user->id,
+            'nama'    => $request->nama,
+            'nik'     => $request->nik,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'no_hp'   => $request->no_hp,
+            'alamat'  => $request->alamat,
+        ]);
+
+        return redirect()->route('guru.index')->with('success', 'Guru berhasil ditambah');
     }
 
     public function edit($id)
     {
-        $guru = Guru::findOrFail($id);
+        $guru = Guru::with('user')->findOrFail($id);
         return view('guru.edit', compact('guru'));
-    }
-
-
-    public function layout()
-    {
-        $guruId = Session::get('guru_id');
-
-        if (!$guruId) {
-            return redirect()->route('loginGuru')->with('error', 'Silakan login dulu.');
-        }
-
-        $guru = Guru::findOrFail($guruId);
-
-        return view('tampil_guru.layout', compact('guru'));
     }
 
     public function update(Request $request, Guru $guru)
     {
-
         $request->validate([
-            'nama' => 'min:5|string',
-            'email' => 'min:5|string',
+            'nama'     => 'required|min:5|string',
+            'nik'      => 'required|digits:16|unique:guru,nik,' . $guru->id,
+            'jenis_kelamin' => 'required|in:Pria,Wanita',
+            'email'    => 'required|email|unique:users,email,' . $guru->user_id,
             'password' => 'nullable|min:5|string',
-            'no_hp' => 'min:12|string',
-            'alamat' => 'min:5|string',
-        ],[
-            'nama.min'=>'Nama minimal 5 karakter',
-            'password.min'=>'Password minimal 5 karakter',
-            'no_hp.min'=>'Nomor HP minimal 12 karakter',
-            'alamat.min'=>'Alamat minimal 5 karakter',
+            'no_hp'    => 'required|min:10|string',
+            'alamat'   => 'required|min:5|string',
+        ], [
+            'nama.min'     => 'Nama minimal 5 karakter',
+            'nik.digits'   => 'NIK harus 16 digit angka',
+            'nik.unique'   => 'NIK sudah terdaftar',
+            'email.unique' => 'Email sudah dipakai',
+            'password.min' => 'Password minimal 5 karakter',
+            'no_hp.min'    => 'Nomor HP minimal 10 karakter',
+            'alamat.min'   => 'Alamat minimal 5 karakter',
         ]);
 
-        $guru->nama = $request->nama;
-        $guru->email = $request->email;
-        $guru->no_hp = $request->no_hp;
+        // Update tabel guru
+        $guru->nama   = $request->nama;
+        $guru->nik    = $request->nik;
+        $guru->jenis_kelamin = $request->jenis_kelamin;
+        $guru->no_hp  = $request->no_hp;
         $guru->alamat = $request->alamat;
-
-        if ($request->filled('password')) {
-            $guru->password = Hash::make($request->password);
-        }
-
         $guru->save();
 
-        return redirect()->route('guru.info')->with('success', 'Guru Berhasil Diubah');
+        // Update tabel users
+        $guru->user->name  = $request->nama;
+        $guru->user->email = $request->email;
+
+        if ($request->filled('password')) {
+            $guru->user->password = Hash::make($request->password);
+        }
+
+        $guru->user->save();
+
+        return redirect()->route('guru.index')->with('success', 'Guru berhasil diubah');
     }
 
     public function destroy(Guru $guru)
-    {
+{
+    if ($guru->user) {
+        $guru->user->delete();
+    } else {
         $guru->delete();
-        return redirect()->route('guru.index')->with('success', 'Guru Berhasil Dihapus');
+    }
+    return redirect()->route('guru.index')->with('success', 'Guru berhasil dihapus');
+}
+
+    // =====================
+    // UNTUK GURU SENDIRI
+    // =====================
+    public function layout()
+    {
+        $guru = Guru::where('user_id', Auth::id())->firstOrFail();
+        return view('tampil_guru.layout', compact('guru'));
     }
 
-    public function infoguru(){
-        $guruId = Session::get('guru_id');
-
-        if (!$guruId) {
-            return redirect()->route('loginGuru')->with('error', 'Silakan login dulu.');
-        }
-
-        $guru = Guru::findOrFail($guruId);
-
+    public function infoguru()
+    {
+        $guru = Guru::where('user_id', Auth::id())->firstOrFail();
         return view('guru.info', compact('guru'));
     }
 
     public function show($id)
-{
-    $guru = Guru::findOrFail($id);
-    return view('guru.show', compact('guru'));
-}
-
-
+    {
+        $guru = Guru::findOrFail($id);
+        return view('guru.show', compact('guru'));
+    }
 }

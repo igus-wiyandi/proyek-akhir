@@ -3,9 +3,7 @@
 namespace App\Rules;
 
 use Closure;
-use App\Models\Guru;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Validation\ValidationRule;
 
 class loginGuruRules implements ValidationRule
@@ -19,21 +17,19 @@ class loginGuruRules implements ValidationRule
 
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $email = $this->request->input('email');
-        $password = $this->request->input('password');
-        $loginStatus = false;
+        $credentials = [
+            'email'    => $this->request->input('email'),
+            'password' => $this->request->input('password'),
+        ];
 
-        $guru = Guru::where('email', $email)->first();
-
-        if ($guru && Hash::check($password, $guru->password)) {
-            $loginStatus = true;
-            Session::put('loginStatus', true);
-            Session::put('ambilUser', $guru);
-            Session::put('isAdmin', false);
+        if (!Auth::attempt($credentials)) {
+            $fail('Email atau password salah.');
+            return;
         }
 
-        if (! $loginStatus) {
-            $fail('Email atau password salah.');
+        if (Auth::user()->role !== 'guru') {
+            Auth::logout();
+            $fail('Akun ini bukan akun guru.');
         }
     }
 }

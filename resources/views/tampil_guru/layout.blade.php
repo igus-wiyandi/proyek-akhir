@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+@php use Illuminate\Support\Facades\Auth; @endphp
 <html lang="en">
 
 <head>
@@ -7,6 +8,7 @@
     <link rel="shortcut icon" href="./img/fav.png" type="image/x-icon" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <title>Nurul Ikhsan</title>
     <style>
         .sidebar-transition {
@@ -88,7 +90,7 @@
                 </div>
                 <div>
                     <p class="text-sm text-gray-500">Welcome</p>
-                    <h1 class="text-xl font-bold text-gray-800 capitalize">{{ Session::get('ambilUser')->nama }}</h1>
+                    <h1 class="text-xl font-bold text-gray-800 capitalize">{{ Auth::user()->guru->nama ?? 'Guru' }}</h1>
                 </div>
             </div>
         </div>

@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Rules\LoginAdminRules;
+use App\Rules\loginAdminRules; 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Auth;
 
 class LoginAdminController extends Controller
 {
-
     public function loginAdmin()
     {
         return view('login_admin.layout');
@@ -19,16 +16,23 @@ class LoginAdminController extends Controller
     public function prosesloginAdmin(Request $request)
     {
         $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', new LoginAdminRules($request)],
+            'email'    => ['required', 'email'],
+            'password' => ['required', new loginAdminRules($request)],
+        ], [
+            'email.required' => 'Email tidak boleh kosong.',
+            'email.email'    => 'Format email tidak valid.',
+            'password.required' => 'Password tidak boleh kosong.',
         ]);
 
+        $request->session()->regenerate();
         return redirect()->route('admin.index');
     }
 
     public function logoutAdmin()
     {
-        Session::flush();
+        Auth::logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
         return redirect()->route('loginAdmin');
     }
 }

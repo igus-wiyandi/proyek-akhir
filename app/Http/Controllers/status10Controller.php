@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Mapel;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class Status10Controller extends Controller
@@ -11,33 +11,34 @@ class Status10Controller extends Controller
      * Display a listing of the resource.
      */
 
-     public function index(Request $request)
-    {
-        $guruId = Session::get('guru_id');
-        $mingguOffset = (int) $request->query('minggu', 0);
+    public function index(Request $request)
+{
+    $guru = \App\Models\Guru::where('user_id', Auth::id())->firstOrFail();
+    $guruId = $guru->id;
+    $mingguOffset = (int) $request->query('minggu', 0);
 
-        $mapel = Mapel::with(['status' => function ($q) use ($guruId) {
-            $q->where('guru_id', $guruId);
-        }])
-        ->where('guru_id', $guruId)
-        ->orderBy('tanggal')
-        ->orderBy('jam_mulai')
-        ->get();
+    $mapel = Mapel::with(['status' => function ($q) use ($guruId) {
+        $q->where('guru_id', $guruId);
+    }])
+    ->where('guru_id', $guruId)
+    ->orderBy('tanggal')
+    ->orderBy('jam_mulai')
+    ->get();
 
-        $mapel = $mapel->map(function ($m, $index) use ($mingguOffset) {
-            $hariKe = \Carbon\Carbon::parse($m->tanggal)->dayOfWeekIso;
-            $startOfWeek = \Carbon\Carbon::now()->startOfWeek()->addWeeks($mingguOffset);
-            $m->tanggal_dihitung = $startOfWeek->copy()->addDays($hariKe - 1)->toDateString();
-            return $m;
-        });
+    $mapel = $mapel->map(function ($m) use ($mingguOffset) {
+        $hariKe = \Carbon\Carbon::parse($m->tanggal)->dayOfWeekIso;
+        $startOfWeek = \Carbon\Carbon::now()->startOfWeek()->addWeeks($mingguOffset);
+        $m->tanggal_dihitung = $startOfWeek->copy()->addDays($hariKe - 1)->toDateString();
+        return $m;
+    });
 
-        $mapel = $mapel->sortBy([
-            ['tanggal_dihitung', 'asc'],
-            ['jam_mulai', 'asc'],
-        ])->values();
+    $mapel = $mapel->sortBy([
+        ['tanggal_dihitung', 'asc'],
+        ['jam_mulai', 'asc'],
+    ])->values();
 
-        return view('status10.index', compact('mapel', 'mingguOffset'));
-    }
+    return view('status10.index', compact('mapel', 'mingguOffset'));
+}
 
 
 

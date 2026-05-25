@@ -21,7 +21,7 @@
 
             <div class="mb-4">
                 <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
-                <input type="email" name="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"  value="{{ $admin->email }}">
+                <input type="email" name="email" id="email" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-300"  value="{{ $admin->user->email }}">
             </div>
 
             <div class="mb-4">
@@ -32,10 +32,15 @@
                 @enderror
             </div>
 
-            <div class="flex items-center justify-between">
-                <button type="submit" class="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors">Ubah</button>
-
-            </div>
+            <div class="flex gap-3">
+                <button type="submit"
+                    class="px-6 py-2 bg-teal-600 hover:bg-teal-700 text-white font-medium rounded-lg transition-colors">
+                    Simpan
+                </button>
+                <a href="{{ route('admin.index') }}"
+                    class="px-6 py-2 bg-gray-400 hover:bg-gray-500 text-white font-medium rounded-lg transition-colors">
+                    Batal
+                </a>
         </form>
     </div>
 </div>
