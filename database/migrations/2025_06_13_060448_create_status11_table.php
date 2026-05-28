@@ -15,10 +15,9 @@ return new class extends Migration
             $table->id();
             $table->enum('status', ['tersedia', 'tidak tersedia'])->default('tersedia');
             $table->unsignedBigInteger('guru_id');
-            $table->unsignedBigInteger('mapel_id');
+            $table->unsignedBigInteger('mapel11_id');
             $table->timestamps();
-            $table->foreign('guru_id')->references('id')->on('guru')->onDelete('cascade');
-            $table->foreign('mapel_id')->references('id')->on('mapel')->onDelete('cascade');
+            $table->foreign('mapel11_id')->references('id')->on('mapel')->onDelete('cascade');
         });
     }
 

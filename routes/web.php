@@ -57,11 +57,11 @@ Route::middleware(LoggedInAdmin::class)->group(function () {
     Route::post('/absensi/preview', [AbsensiController::class, 'preview'])->name('absensi.preview');
     Route::post('/perhitungan_gaji/range', [PerhitunganGajiController::class, 'filterByDateRange'])->name('perhitungan_gaji.range');
     Route::resource('admin', AdminController::class);
-    Route::resource('guru', GuruController::class) ->except(['show']);
+    Route::resource('guru', GuruController::class)->except(['show']);
     Route::resource('mapel', MapelKelas10Controller::class);
     Route::resource('mapel11', MapelKelas11Controller::class);
     Route::resource('mapel12', MapelKelas12Controller::class);
-    Route::resource('absensi', AbsensiController::class);
+    Route::resource('absensi', AbsensiController::class)->except(['show']);
     Route::resource('kategori', KategoriController::class);
     Route::resource('jabatan', JabatanController::class);
     Route::resource('laporan', LaporanController::class);
@@ -72,6 +72,3 @@ Route::middleware(LoggedInAdmin::class)->group(function () {
 Route::get('/guru/layout', [GuruController::class, 'layout'])->name('guru.layout');
 
 Route::get('/guru/info', [GuruController::class, 'infoguru'])->name('guru.info');
-
-
-
