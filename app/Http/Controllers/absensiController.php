@@ -9,16 +9,25 @@ use App\Models\Guru;
 use App\Models\Jabatan;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
+use Carbon\CarbonPeriod;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
+use Illuminate\Support\Facades\Auth;
+
+
 class AbsensiController extends Controller
 {
     public function index()
     {
-        $isAdmin = Session::get('isAdmin');
+        $isAdmin = Auth::user()->role === 'admin';
+
         $absensi = Absensi::with('guru')->paginate(5);
         if(!$isAdmin){
             $absensi = Absensi::with('guru')
                 ->whereHas('guru', function ($query) {
-                    $query->where('id', Session::get('ambilUser')->id);
+                    // $query->where('id', Session::get('ambilUser')->id);
+                    $query->where('id', Auth::user()->guru->id);
                 })->paginate(5);
         }
 
@@ -29,7 +38,7 @@ class AbsensiController extends Controller
     }
     public function create()
     {
-        $isAdmin = Session::get('isAdmin');
+        $isAdmin = Auth::user()->role === 'admin';
 
         $absensi = null;
         return view('absensi.create', compact('absensi', 'isAdmin'));
@@ -39,7 +48,9 @@ class AbsensiController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,xls|max:2048',
         ]);
-        $isAdmin = Session::get('isAdmin');
+
+        $isAdmin = Auth::user()->role === 'admin';
+
 
         try {
             $import = new AbsensiImport();
@@ -108,3 +119,4 @@ class AbsensiController extends Controller
         return redirect()->route('absensi.index')->with('success', $success . ' Data Absensi berhasil disimpan!')->with('isAdmin', $isAdmin);
     }
 }
+
