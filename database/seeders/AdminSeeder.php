@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
     {
         DB::table('admin')->insert([
             'nama' => 'Administrator',
-            'email' => 'admin@example.com',
+            'email' => 'admin@gmail.com',
             'password' => Hash::make('rahasia123'), // Password akan di-hash agar aman
             'created_at' => now(),
             'updated_at' => now(),

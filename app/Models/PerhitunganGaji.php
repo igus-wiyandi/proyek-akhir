@@ -11,6 +11,17 @@ class PerhitunganGaji extends Model
     protected $table = 'gaji';
     protected $guarded = ['id'];
 
+    // WAJIB: Casting JSON ke Array agar mudah di-looping di Blade
+    protected $casts = [
+        'rincian_mingguan' => 'array',
+        'periode_mulai' => 'date',
+        'periode_akhir' => 'date',
+    ];
+
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class, 'guru_id');
+    }
 
     public function jabatan()
     {

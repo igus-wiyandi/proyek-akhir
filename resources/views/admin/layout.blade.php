@@ -95,7 +95,7 @@
 
             <!-- Sidebar Content -->
             <div class="flex-1 overflow-y-auto custom-scrollbar p-4">
-    
+
                 <!-- Admin Section -->
                 <div class="mb-8">
                     <div class="flex items-center mb-4">
@@ -198,10 +198,10 @@
                                 <i class="fad fa-chevron-down text-xs transition-transform duration-200" id="laporanChevron"></i>
                             </button>
                             <div id="laporanDropdown" class="ml-14 mt-2 space-y-1 hidden">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors">
+                                <a href="{{ route('absensi.report') }}" class="block px-4 py-2 text-sm text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors">
                                     Laporan Absen
                                 </a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors">
+                                <a href="{{ route('perhitungan_gaji.laporanGaji') }}" class="block px-4 py-2 text-sm text-gray-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors">
                                     Laporan Gaji
                                 </a>
                             </div>
@@ -257,7 +257,7 @@
         });
 
         // Mata Pelajaran dropdown
-        document.getElementById('mapelToggleBtn').addEventListener('click', function () {
+        document.getElementById('mapelToggleBtn').addEventListener('click', function() {
             const dropdown = document.getElementById('mapelDropdown');
             const chevron = document.getElementById('mapelChevron');
 
@@ -266,7 +266,7 @@
         });
 
         // Laporan dropdown
-        document.getElementById('laporanToggleBtn').addEventListener('click', function () {
+        document.getElementById('laporanToggleBtn').addEventListener('click', function() {
             const dropdown = document.getElementById('laporanDropdown');
             const chevron = document.getElementById('laporanChevron');
 
@@ -274,7 +274,7 @@
             chevron.classList.toggle('rotate-180');
         });
     </script>
-     @stack('scripts')
+    @stack('scripts')
 </body>
 
 </html>

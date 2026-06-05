@@ -11,25 +11,67 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
+use App\Exports\AbsensiLaporanExport;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 class AbsensiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $isAdmin = Session::get('isAdmin');
-        $absensi = Absensi::with('guru')->paginate(5);
+        $userLokal = Session::get('ambilUser');
+
+        // 1. Tangkap Filter dari Request (Set default ke bulan ini jika kosong)
+        $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
+        $status = $request->input('status');
+        $guruId = $request->input('guru_id');
+
+        // 2. Buat Base Query
+        $query = Absensi::with('guru')->whereBetween('tanggal', [$startDate, $endDate]);
+
+        // 3. Terapkan Filter Berdasarkan Hak Akses
         if (!$isAdmin) {
-            $absensi = Absensi::with('guru')
-                ->whereHas('guru', function ($query) {
-                    $query->where('id', Session::get('ambilUser')->id);
-                })->paginate(5);
+            $query->where('guru_id', $userLokal->id);
+        } else {
+            if ($guruId) {
+                $query->where('guru_id', $guruId);
+            }
         }
+
+        // 4. Terapkan Filter Status (Hadir / Alpa / Setengah Hari)
+        if ($status) {
+            $query->where('status_kehadiran', $status);
+        }
+
+        // 5. Hitung Statistik (Clone query agar pagination di bawah tidak rusak)
+        $statsQuery = clone $query;
+        $totalHadir = (clone $statsQuery)->where('status_kehadiran', 'Hadir')->count();
+        $totalAlpa = (clone $statsQuery)->where('status_kehadiran', 'Alpa')->count();
+        // Hitung total jam yang dipotong untuk estimasi pemotongan gaji
+        $totalPotongan = (clone $statsQuery)->sum('potongan_jam');
+
+        // 6. Ambil Data dengan Pagination 
+        $absensi = $query->orderBy('tanggal', 'desc')->paginate(10)->withQueryString();
+
+        // 7. Ambil Daftar Guru untuk Dropdown Filter (Hanya untuk Admin)
+        $listGuru = $isAdmin ? Guru::orderBy('nama')->get() : [];
 
         return view('absensi.index', [
             'absensi' => $absensi,
-            'isAdmin' => $isAdmin
+            'isAdmin' => $isAdmin,
+            'listGuru' => $listGuru,
+            'totalHadir' => $totalHadir,
+            'totalAlpa' => $totalAlpa,
+            'totalPotongan' => $totalPotongan,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'selectedStatus' => $status,
+            'selectedGuru' => $guruId
         ]);
     }
     public function create()
@@ -45,7 +87,7 @@ class AbsensiController extends Controller
             'tanggal_mulai' => 'required|date',
             'tanggal_akhir' => 'required|date|after_or_equal:tanggal_mulai',
             'file' => 'required|file|max:20000',
-            'tanggal_libur'   => 'nullable|array',         // Beri tahu Laravel ini adalah Array
+            'tanggal_libur'   => 'nullable|array',
             'tanggal_libur.*' => 'nullable|date',
         ]);
 
@@ -79,23 +121,17 @@ class AbsensiController extends Controller
                     unlink($fullPath);
                 }
 
-                // --- Lanjutkan proses datanya di bawah ini ---
-
                 // Ambil sheet pertama (index 0) apa pun namanya
                 $processedData = $data[0] ?? [];
 
                 $rawExcelData = array_slice($processedData, 1); // Skip baris header
 
-                // dd($rawExcelData);
-                // ---------------------------------------------------------
-                // FASE 1: MAPPING DATA EXCEL (Berdasarkan NIK)
-                // ---------------------------------------------------------
                 // ---------------------------------------------------------
                 // FASE 1: MAPPING DATA EXCEL (Berdasarkan NIK)
                 // ---------------------------------------------------------
                 $excelMapped = [];
                 foreach ($rawExcelData as $row) {
-                    // Sesuaikan angka index 2 dengan kolom NIK di Excel (Di gambarmu index 2 bernilai null)
+                    // Sesuaikan angka index 2 dengan kolom NIK di Excel 
                     $nikExcel = trim($row[2] ?? '');
 
                     // Ambil data mentah dari Excel
@@ -128,12 +164,11 @@ class AbsensiController extends Controller
                             'nama_di_excel' => trim($row[3] ?? ''),
                             'jam_masuk' => $jamMasukExcel,
                             'jam_pulang' => $jamPulangExcel,
-                            'jml_jam_kerja' => $jmlhJamKerjaExcel, // Dibiarkan saja karena kita pakai logika batas 8 jam
+                            'jml_jam_kerja' => $jmlhJamKerjaExcel,
                         ];
                     }
                 }
 
-                // dd($excelMapped);
                 // ---------------------------------------------------------
                 // FASE 2: CROSS-CHECKING DENGAN MASTER GURU (Menggunakan NIK)
                 // ---------------------------------------------------------
@@ -142,10 +177,10 @@ class AbsensiController extends Controller
 
 
                 $period = CarbonPeriod::create($request->tanggal_mulai, $request->tanggal_akhir);
-                // TAMBAHAN: Sabuk Pengaman Validasi Tanggal
+
                 $adaDataYangCocok = false;
 
-                // 2. Tangkap array tanggal libur (berikan array kosong [] jika null)
+                //  Tangkap array tanggal libur (berikan array kosong [] jika null)
                 $tanggalLibur = $request->tanggal_libur ?? [];
 
                 foreach ($semuaGuru as $guru) {
@@ -154,7 +189,6 @@ class AbsensiController extends Controller
                             continue;
                         }
 
-                        // dd($guru->nama, $date);
                         $tglStr = $date->format('Y-m-d');
                         $nikGuru = $guru->nik;
                         $namaGuru = $guru->nama;
@@ -226,14 +260,12 @@ class AbsensiController extends Controller
                     }
                 }
 
-                // TAMBAHAN: Pengecekan Akhir Sabuk Pengaman
                 // Jika setelah muter-muter seluruh guru ternyata tidak ada satupun data yang cocok
                 if ($adaDataYangCocok === false) {
                     // dd('error', 'Gagal! Tanggal pada file Excel yang diunggah tidak sesuai dengan rentang tanggal yang Anda pilih di form.');
                     return back()->with('error', 'Gagal! Tanggal pada file Excel yang diunggah tidak sesuai dengan rentang tanggal yang Anda pilih di form.');
                 }
 
-                // dd($cleanData);
                 return view('absensi.create', ['dataAbsensi' => $cleanData, 'isAdmin' => $isAdmin]);
             } else {
                 return back()->with('error', 'File tidak valid atau gagal diunggah.');
@@ -283,7 +315,6 @@ class AbsensiController extends Controller
             DB::commit(); // Simpan permanen ke database
 
             // Arahkan kembali ke halaman index absensi dengan pesan sukses
-            // Sesuaikan 'absensi.index' dengan nama route tabel utamamu
             return redirect()->route('absensi.index')
                 ->with('success', 'Data absensi berhasil disimpan ke database!');
         } catch (\Exception $e) {
@@ -291,5 +322,107 @@ class AbsensiController extends Controller
 
             return back()->with('error', 'Gagal menyimpan data ke database: ' . $e->getMessage());
         }
+    }
+
+    public function report(Request $request)
+    {
+        $isAdmin = Session::get('isAdmin');
+        $userLokal = Session::get('ambilUser');
+
+        // 1. Atur default rentang tanggal ke bulan berjalan jika form pertama kali dimuat
+        $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
+        $status = $request->input('status');
+        $guruId = $request->input('guru_id');
+
+        // 2. Bangun query dasar
+        $query = Absensi::with('guru')->whereBetween('tanggal', [$startDate, $endDate]);
+
+        // 3. Batasi hak akses data
+        if (!$isAdmin) {
+            // Guru biasa hanya bisa melihat laporan miliknya sendiri
+            $query->where('guru_id', $userLokal->id);
+        } else {
+            // Admin bisa memfilter berdasarkan dropdown guru
+            if ($guruId) {
+                $query->where('guru_id', $guruId);
+            }
+        }
+
+        // 4. Filter berdasarkan status kehadiran
+        if ($status) {
+            $query->where('status_kehadiran', $status);
+        }
+
+        // 5. Ambil data secara keseluruhan untuk kebutuhan cetak dokumen lap.
+        $reports = $query->orderBy('tanggal', 'asc')->get();
+
+        // 6. Ambil daftar master guru untuk pilihan dropdown filter admin
+        $listGuru = $isAdmin ? Guru::orderBy('nama')->get() : [];
+
+        return view('absensi.report', [
+            'reports' => $reports,
+            'listGuru' => $listGuru,
+            'isAdmin' => $isAdmin,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'selectedStatus' => $status,
+            'selectedGuru' => $guruId
+        ]);
+    }
+
+    // Fungsi Helper internal untuk menghindari penulisan query filter berulang-ulang
+    private function getFilteredReportData(Request $request)
+    {
+        $isAdmin = Session::get('isAdmin');
+        $userLokal = Session::get('ambilUser');
+
+        $startDate = $request->input('start_date', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $endDate = $request->input('end_date', Carbon::now()->endOfMonth()->format('Y-m-d'));
+        $status = $request->input('status');
+        $guruId = $request->input('guru_id');
+
+        $query = Absensi::with('guru')->whereBetween('tanggal', [$startDate, $endDate]);
+
+        if (!$isAdmin) {
+            $query->where('guru_id', $userLokal->id);
+        } else {
+            if ($guruId) {
+                $query->where('guru_id', $guruId);
+            }
+        }
+
+        if ($status) {
+            $query->where('status_kehadiran', $status);
+        }
+
+        return [
+            'reports' => $query->orderBy('tanggal', 'asc')->get(),
+            'startDate' => $startDate,
+            'endDate' => $endDate
+        ];
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $data = $this->getFilteredReportData($request);
+        $filename = 'Laporan_Absensi_' . $data['startDate'] . '_to_' . $data['endDate'] . '.xlsx';
+
+        return Excel::download(new AbsensiLaporanExport($data['reports'], $data['startDate'], $data['endDate']), $filename);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $data = $this->getFilteredReportData($request);
+
+        // Set opsi kertas dan load view khusus pdf (tanpa layout sidebar/navbar)
+        $pdf = Pdf::loadView('absensi.export_pdf', [
+            'reports' => $data['reports'],
+            'startDate' => $data['startDate'],
+            'endDate' => $data['endDate']
+        ])->setPaper('a4', 'portrait');
+
+        $filename = 'Laporan_Absensi_' . $data['startDate'] . '_to_' . $data['endDate'] . '.pdf';
+        return $pdf->download($filename);
     }
 }

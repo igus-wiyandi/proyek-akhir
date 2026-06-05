@@ -55,7 +55,21 @@ Route::post('/mapel12/{id}/pilih-guru12', [MapelKelas12Controller::class, 'simpa
 
 Route::middleware(LoggedInAdmin::class)->group(function () {
     Route::post('/absensi/preview', [AbsensiController::class, 'preview'])->name('absensi.preview');
-    Route::post('/perhitungan_gaji/range', [PerhitunganGajiController::class, 'filterByDateRange'])->name('perhitungan_gaji.range');
+    Route::post('/perhitungan_gaji/generate', [PerhitunganGajiController::class, 'generate'])->name('perhitungan_gaji.range');
+    // Route::post('/perhitungan_gaji/range', [PerhitunganGajiController::class, 'filterByDateRange'])->name('perhitungan_gaji.range');
+
+    Route::get('/gaji/laporanGaji', [PerhitunganGajiController::class, 'laporanGaji'])->name('perhitungan_gaji.laporanGaji');
+    Route::get('/gaji', [PerhitunganGajiController::class, 'index'])->name('perhitungan_gaji.index');
+
+    Route::get('/absensi/laporan', [AbsensiController::class, 'report'])->name('absensi.report');
+
+
+    Route::post('/gaji/preview', [PerhitunganGajiController::class, 'preview'])->name('perhitungan_gaji.preview');
+    Route::post('/gaji/store', [PerhitunganGajiController::class, 'store'])->name('perhitungan_gaji.store');
+
+    Route::get('/absensi/laporan/excel', [AbsensiController::class, 'exportExcel'])->name('absensi.report.excel');
+    Route::get('/absensi/laporan/pdf', [AbsensiController::class, 'exportPdf'])->name('absensi.report.pdf');
+
     Route::resource('admin', AdminController::class);
     Route::resource('guru', GuruController::class)->except(['show']);
     Route::resource('mapel', MapelKelas10Controller::class);
