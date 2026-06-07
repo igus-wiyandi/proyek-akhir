@@ -173,6 +173,7 @@ class AbsensiController extends Controller
                 // FASE 2: CROSS-CHECKING DENGAN MASTER GURU (Menggunakan NIK)
                 // ---------------------------------------------------------
                 $cleanData = [];
+                $listGuru = Guru::orderBy('nama', 'asc')->get();
                 $semuaGuru = Guru::all();
 
 
@@ -266,7 +267,7 @@ class AbsensiController extends Controller
                     return back()->with('error', 'Gagal! Tanggal pada file Excel yang diunggah tidak sesuai dengan rentang tanggal yang Anda pilih di form.');
                 }
 
-                return view('absensi.create', ['dataAbsensi' => $cleanData, 'isAdmin' => $isAdmin]);
+                return view('absensi.create', ['dataAbsensi' => $cleanData, 'isAdmin' => $isAdmin, 'listGuru' => $listGuru]);
             } else {
                 return back()->with('error', 'File tidak valid atau gagal diunggah.');
             }

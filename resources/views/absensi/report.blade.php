@@ -126,7 +126,7 @@
         <div class="hidden print:block mt-12">
             <div class="flex justify-end">
                 <div class="text-center w-64">
-                    <p class="text-sm">Majalengka, {{ \Carbon\Carbon::now()->format('d F Y') }}</p>
+                    <p class="text-sm">Bangka, {{ \Carbon\Carbon::now()->format('d F Y') }}</p>
                     <p class="text-sm font-semibold mt-1 mb-20">Kepala Madrasah,</p>
                     <p class="text-sm font-bold border-b border-gray-800 pb-1">_______________________</p>
                     <p class="text-xs text-gray-500 mt-1">NIP. ..................................</p>

@@ -70,6 +70,20 @@ Route::middleware(LoggedInAdmin::class)->group(function () {
     Route::get('/absensi/laporan/excel', [AbsensiController::class, 'exportExcel'])->name('absensi.report.excel');
     Route::get('/absensi/laporan/pdf', [AbsensiController::class, 'exportPdf'])->name('absensi.report.pdf');
 
+
+    Route::get('/gaji/export/excel', [PerhitunganGajiController::class, 'exportExcel'])->name('perhitungan_gaji.excel');
+    Route::get('/gaji/export/pdf', [PerhitunganGajiController::class, 'exportPdf'])->name('perhitungan_gaji.pdf');
+
+    // Halaman daftar slip gaji untuk guru
+    Route::get('/guru/slip-gaji', [PerhitunganGajiController::class, 'slipGajiGuru'])->name('guru.slip_gaji');
+
+    // Route untuk download PDF per slip gaji
+    Route::get('/guru/slip-gaji/download/{id}', [PerhitunganGajiController::class, 'downloadSlipGuru'])->name('guru.slip_gaji.download');
+
+    // Halaman Detail Preview Slip Gaji
+    Route::get('/guru/slip-gaji/{id}', [PerhitunganGajiController::class, 'showSlipGuru'])->name('guru.slip_gaji.show');
+
+
     Route::resource('admin', AdminController::class);
     Route::resource('guru', GuruController::class)->except(['show']);
     Route::resource('mapel', MapelKelas10Controller::class);

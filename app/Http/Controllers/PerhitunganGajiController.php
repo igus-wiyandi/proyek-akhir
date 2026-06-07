@@ -11,6 +11,9 @@ use App\Models\Absensi;
 use App\Models\Guru;
 use App\Models\Jabatan;
 use Carbon\Carbon;
+use App\Exports\GajiRiwayatExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class PerhitunganGajiController extends Controller
@@ -24,14 +27,23 @@ class PerhitunganGajiController extends Controller
     public function laporanGaji(Request $request)
     {
         $isAdmin = Session::get('isAdmin');
+        $userLokal = Session::get('ambilUser');
         $dataGaji = collect(); // Default tabel kosong saat pertama dibuka
 
+        $guruId = $request->input('guru_id');
         // Jika tombol "Cari Riwayat" ditekan
         if ($request->has('start') && $request->has('end')) {
-            $dataGaji = PerhitunganGaji::with('guru')
-                ->whereBetween('periode_mulai', [$request->start, $request->end])
-                ->orderBy('created_at', 'desc')
-                ->get();
+            $query = PerhitunganGaji::with('guru')->whereBetween('periode_mulai', [$request->start, $request->end]);
+
+            if (!$isAdmin) {
+                $query->where('guru_id', $userLokal->id);
+            } else {
+                if ($guruId) {
+                    $query->where('guru_id', $guruId);
+                }
+            }
+
+            $dataGaji = $query->orderBy('created_at', 'desc')->get();
         }
 
         return view('gaji.laporanGaji', compact('dataGaji', 'isAdmin'));
@@ -323,5 +335,104 @@ class PerhitunganGajiController extends Controller
             DB::rollBack();
             return back()->with('error', 'Gagal menyimpan: ' . $e->getMessage());
         }
+    }
+
+    private function getFilteredGajiData(Request $request)
+    {
+        $isAdmin = Session::get('isAdmin');
+        $userLokal = Session::get('ambilUser');
+
+        $start = $request->input('start');
+        $end = $request->input('end');
+
+        $query = PerhitunganGaji::with('guru');
+
+        // Filter berdasarkan hak akses login
+        if (!$isAdmin) {
+            $query->where('guru_id', $userLokal->id);
+        }
+
+        // Filter berdasarkan tanggal riwayat penggajian
+        if ($start && $end) {
+            $query->whereBetween('periode_mulai', [$start, $end]);
+        }
+
+        return [
+            'dataGaji' => $query->orderBy('created_at', 'desc')->get(),
+            'start' => $start,
+            'end' => $end
+        ];
+    }
+
+    public function exportExcel(Request $request)
+    {
+        $data = $this->getFilteredGajiData($request);
+        $filename = 'Riwayat_Penggajian_' . ($data['start'] ?? 'Semua') . '_to_' . ($data['end'] ?? 'Semua') . '.xlsx';
+
+        return Excel::download(new GajiRiwayatExport($data['dataGaji'], $data['start'], $data['end']), $filename);
+    }
+
+    public function exportPdf(Request $request)
+    {
+        $data = $this->getFilteredGajiData($request);
+
+        // Gunakan orientasi landscape agar tabel penggajian yang lebar muat dalam satu halaman A4
+        $pdf = Pdf::loadView('gaji.export_pdf', [
+            'dataGaji' => $data['dataGaji'],
+            'start' => $data['start'],
+            'end' => $data['end']
+        ])->setPaper('a4', 'landscape');
+
+        $filename = 'Riwayat_Penggajian_' . ($data['start'] ?? 'Semua') . '_to_' . ($data['end'] ?? 'Semua') . '.pdf';
+        return $pdf->download($filename);
+    }
+
+    public function slipGajiGuru()
+    {
+        $isAdmin = Session::get('isAdmin');
+        $userLokal = Session::get('ambilUser');
+
+        // Tarik riwayat gaji khusus untuk guru yang sedang login
+        $riwayatGaji = PerhitunganGaji::where('guru_id', $userLokal->id)
+            ->orderBy('periode_mulai', 'desc')
+            ->get();
+
+        // Pisahkan data terbaru dan data riwayat lama
+        $gajiTerbaru = $riwayatGaji->first(); // Mengambil 1 data paling atas
+        $riwayatLama = $riwayatGaji->skip(1); // Mengambil sisa datanya
+
+        return view('tampil_guru.slip_gaji', compact('gajiTerbaru', 'riwayatLama', 'isAdmin'));
+    }
+
+    // FUNGSI DOWNLOAD PDF SLIP GAJI SATUAN
+    public function downloadSlipGuru($id)
+    {
+        $userLokal = Session::get('ambilUser');
+
+        // Pastikan guru hanya bisa mendownload slip miliknya sendiri (keamanan)
+        $gaji = PerhitunganGaji::with('guru')
+            ->where('id', $id)
+            ->where('guru_id', $userLokal->id)
+            ->firstOrFail();
+
+        // Kita gunakan ukuran kertas A5 (landscape) atau A4 agar cocok untuk slip
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('gaji.slip_pdf', compact('gaji'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Slip_Gaji_' . str_replace(' ', '_', $gaji->nama_periode) . '.pdf');
+    }
+
+    public function showSlipGuru($id)
+    {
+        $userLokal = Session::get('ambilUser');
+        $isAdmin = Session::get('isAdmin');
+
+        // Pastikan keamanan: hanya slip miliknya yang bisa dibuka
+        $gaji = PerhitunganGaji::with('guru')
+            ->where('id', $id)
+            ->where('guru_id', $userLokal->id)
+            ->firstOrFail();
+
+        return view('tampil_guru.slip_gaji_detail', compact('gaji', 'isAdmin'));
     }
 }

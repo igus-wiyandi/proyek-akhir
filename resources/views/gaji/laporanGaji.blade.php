@@ -31,7 +31,18 @@
                     <label class="text-xs font-semibold text-gray-600 block mb-1">Akhir Periode</label>
                     <input type="date" name="end" value="{{ request('end') }}" class="text-sm border-gray-300 rounded focus:border-teal-500 py-2 px-3" required>
                 </div>
-                <button type="submit" class="bg-teal-700 text-white px-6 py-2 rounded text-sm font-semibold hover:bg-teal-800">Cari Riwayat</button>
+                <div class="flex gap-2 items-end">
+                    <button type="submit" class="bg-teal-700 text-white px-6 py-2 rounded text-sm font-semibold hover:bg-teal-800 transition">Cari RiwayatT</button>
+
+                    @if(request('start') && request('end') && !$dataGaji->isEmpty())
+                    <a href="{{ route('perhitungan_gaji.excel', request()->all()) }}" class="bg-green-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-green-700 transition flex items-center gap-1 shadow-sm">
+                        📊 Excel
+                    </a>
+                    <a href="{{ route('perhitungan_gaji.pdf', request()->all()) }}" class="bg-red-600 text-white px-4 py-2 rounded text-sm font-semibold hover:bg-red-700 transition flex items-center gap-1 shadow-sm">
+                        📄 PDF
+                    </a>
+                    @endif
+                </div>
             </form>
         </div>
 

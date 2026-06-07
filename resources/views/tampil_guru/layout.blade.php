@@ -135,7 +135,7 @@
                     </a>
 
                     <!-- Rekap Gaji -->
-                    <a href="{{ route('perhitungan_gaji.index') }}" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
+                    <a href="{{ route('guru.slip_gaji') }}" class="menu-item flex items-center px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-50 hover-scale mb-2 group">
                         <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors">
                             <i class="fas fa-money-bill-wave text-green-600 text-sm"></i>
                         </div>
@@ -256,7 +256,7 @@
 
         // Smooth scroll untuk anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
