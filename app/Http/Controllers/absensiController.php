@@ -124,7 +124,7 @@ class AbsensiController extends Controller
                 // Ambil sheet pertama (index 0) apa pun namanya
                 $processedData = $data[0] ?? [];
 
-                $rawExcelData = array_slice($processedData, 1); // Skip baris header
+                $rawExcelData = array_slice($processedData, 1);
 
                 // ---------------------------------------------------------
                 // FASE 1: MAPPING DATA EXCEL (Berdasarkan NIK)
@@ -140,24 +140,23 @@ class AbsensiController extends Controller
                     $jamPulangRaw = $row[10] ?? '';
                     $jmlJamKerjaRaw = $row[17] ?? '';
 
-                    // TRANSLATE ANGKA EXCEL KE FORMAT YANG BISA DIBACA
                     // Jika isinya angka (desimal excel), kita konversi. Jika teks biasa, biarkan.
                     // (Support Format d/m/Y atau d-m-Y)
                     if (is_numeric($tanggalRaw)) {
-                        $tanggalExcel = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($tanggalRaw)->format('Y-m-d');
+                        $tanggalExcel = Date::excelToDateTimeObject($tanggalRaw)->format('Y-m-d');
                     } else {
                         // Standarisasi pemisah: ubah semua garis miring (/) menjadi strip (-)
                         $cleanDate = str_replace('/', '-', trim($tanggalRaw));
 
                         try {
-                            // 1. Coba paksa baca dengan format Indonesia (Hari-Bulan-Tahun)
-                            $tanggalExcel = \Carbon\Carbon::createFromFormat('d-m-Y', $cleanDate)->format('Y-m-d');
+                            // Coba baca dengan format Indonesia (Hari-Bulan-Tahun)
+                            $tanggalExcel = Carbon::createFromFormat('d-m-Y', $cleanDate)->format('Y-m-d');
                         } catch (\Exception $e) {
                             try {
-                                // 2. Jika gagal (misal datanya sudah Y-m-d dari sananya), biarkan Carbon menebak
-                                $tanggalExcel = \Carbon\Carbon::parse($cleanDate)->format('Y-m-d');
+                                // Jika gagal (misal datanya sudah Y-m-d dari sananya), biarkan Carbon menebak
+                                $tanggalExcel = Carbon::parse($cleanDate)->format('Y-m-d');
                             } catch (\Exception $e2) {
-                                // 3. Fallback mentah jika format benar-benar hancur
+                                // Fallback mentah jika format benar-benar hancur
                                 $tanggalExcel = $tanggalRaw;
                             }
                         }
